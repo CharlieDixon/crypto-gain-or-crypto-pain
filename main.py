@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Path, Depends
+from fastapi import FastAPI, Path, Depends, BackgroundTasks
 from sql_database import models
 from sqlalchemy.orm import Session
 from sql_database.database import SessionLocal, engine
@@ -20,12 +20,16 @@ def get_db():
     finally:
         db.close()
 
+def fetch_crypto_data(id: int):
+    db = SessionLocal
+    crypto = db.query(Cryptocurrency).filter(Cryptocurrency.id == id)
+
 @app.get("/")
 def home():
     return {"Home": "Page"}
 
 @app.post("/new_currency")
-def add_new_currency_to_db(crypto_request: CryptoRequest, db: Session = Depends(get_db)):
+def add_new_currency_to_db(crypto_request: CryptoRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     """Adds a user-defined cryptocurrency to the database."""
     crypto = Cryptocurrency()
     crypto.symbol = crypto_request.symbol

@@ -1,4 +1,6 @@
 from fastapi import FastAPI, Path, Depends, BackgroundTasks
+from fastapi.templating import Jinja2Templates
+from starlette.requests import Request
 from sql_database import models
 from sqlalchemy.orm import Session
 from sql_database.database import SessionLocal, engine
@@ -12,6 +14,7 @@ cfg.read("binance_api_key.cfg")  # access api credentials
 
 client = Client(cfg.get("KEYS", "api_key"), cfg.get("KEYS", "api_secret_key"))
 
+templates = Jinja2Templates(directory="templates")
 
 app = FastAPI()
 
@@ -38,18 +41,17 @@ def fetch_crypto_data(id: int):
     binance_info = client.get_ticker(symbol=crypto.symbol)
     crypto.price = str(binance_info["weightedAvgPrice"])
     crypto.change = str(binance_info["priceChange"])
-    print(type(crypto.change))
     crypto.percentage_change = str(binance_info["priceChangePercent"])
-    crypto.gain = True if float(crypto.percentage_change) > 1 else False
-    crypto.pain = True if float(crypto.percentage_change) < -1 else False
+    crypto.gain = True if float(crypto.percentage_change) > 5 else False
+    crypto.pain = True if float(crypto.percentage_change) < -5 else False
 
     db.add(crypto)
     db.commit()
 
 
 @app.get("/")
-def home():
-    return {"Home": "Page"}
+def home(request: Request):
+    return templates.TemplateResponse("homepage.html", {"request": request})
 
 
 @app.post("/new_currency")

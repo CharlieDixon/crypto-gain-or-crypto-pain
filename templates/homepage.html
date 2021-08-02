@@ -1,6 +1,24 @@
 {% extends "layout.html" %}
 
 {% block content %}
+<div class="ui left icon input loading">
+    <input type="text" placeholder="Search..." data-com.bitwarden.browser.user-edited="yes">
+    <i class="search icon"></i>
+</div>
+<div class="ui checkbox">
+    <input type="checkbox" name="gain">
+    <label>Gain</label>
+</div>
+<div class="ui checkbox">
+    <input type="checkbox" name="pain">
+    <label>Pain</label>
+</div>
+<button class="ui primary button">
+    Filter
+  </button>
+  <button class="ui button">
+    Reset
+</button>
 <table class="ui celled table">
     <thead>
       <tr>

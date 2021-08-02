@@ -8,7 +8,8 @@ class Cryptocurrency(Base):
     id = Column(Integer, primary_key=True, index=True)
     symbol = Column(String, unique=True, index=True)
     price = Column(Numeric(10, 2))
-    change24hrs = Column(Numeric(10, 2))
+    change = Column(Numeric(10, 2))
+    percentage_change = Column(Numeric(10, 2))
     gain = Column(Boolean, default=None)
     pain = Column(Boolean, default=None)
 

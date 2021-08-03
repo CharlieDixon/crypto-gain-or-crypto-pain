@@ -10,24 +10,27 @@
         min-width: 400px;
     }
 </style>
+<form>
 <div class="ui left icon input loading">
-    <input type="text" placeholder="Search..." data-com.bitwarden.browser.user-edited="yes">
+    <input name="search" type="text" placeholder="Search..." data-com.bitwarden.browser.user-edited="yes">
     <i class="search icon"></i>
 </div>
 <div class="ui checkbox">
-    <input type="checkbox" name="gain">
+    <input name="gain" type="checkbox" name="gain">
     <label>Gain</label>
 </div>
 <div class="ui checkbox">
-    <input type="checkbox" name="pain">
+    <input name="pain" type="checkbox" name="pain">
     <label>Pain</label>
 </div>
-<button class="ui primary button">
+<button type="submit" class="ui button primary">
     Filter
   </button>
   <button class="ui button">
     Reset
 </button>
+</form>
+
 <table class="ui celled table">
     <thead>
       <tr>

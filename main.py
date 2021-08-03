@@ -50,8 +50,11 @@ def fetch_crypto_data(id: int):
 
 
 @app.get("/")
-def home(request: Request, db: Session = Depends(get_db)):
-    cryptos = db.query(Cryptocurrency).all()
+def home(request: Request, search=None, gain=None, pain=None, db: Session = Depends(get_db)):
+    cryptos = db.query(Cryptocurrency)
+
+    if search:
+        cryptos = cryptos.filter(Cryptocurrency.symbol == search)
     
     return templates.TemplateResponse("homepage.html", {"request": request, "cryptos": cryptos})
 

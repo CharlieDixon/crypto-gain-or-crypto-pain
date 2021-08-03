@@ -50,8 +50,10 @@ def fetch_crypto_data(id: int):
 
 
 @app.get("/")
-def home(request: Request):
-    return templates.TemplateResponse("homepage.html", {"request": request})
+def home(request: Request, db: Session = Depends(get_db)):
+    cryptos = db.query(Cryptocurrency).all()
+    
+    return templates.TemplateResponse("homepage.html", {"request": request, "cryptos": cryptos})
 
 
 @app.post("/new_currency")

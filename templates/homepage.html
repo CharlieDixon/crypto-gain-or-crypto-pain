@@ -1,6 +1,15 @@
 {% extends "layout.html" %}
 
 {% block content %}
+<style>
+    .ui.celled.table {
+        border-collapse: collapse;
+        margin: 25px 0;
+        color: blue;
+        font-size: 0.9em;
+        min-width: 400px;
+    }
+</style>
 <div class="ui left icon input loading">
     <input type="text" placeholder="Search..." data-com.bitwarden.browser.user-edited="yes">
     <i class="search icon"></i>
@@ -23,31 +32,33 @@
     <thead>
       <tr>
         <th>Cryptocurrency</th>
+        <th>Price</th>
         <th>Price Change</th>
         <th>Percentage Change</th>
+        <th>Gain</th>
+        <th>Pain</th>
       </tr>
     </thead>
     <tbody>
+        {% for crypto in cryptos %}
       <tr>
-        <td>ETHBTC</td>
-        <td>Unknown</td>
-        <td class="negative">None</td>
+        <td>{{crypto.symbol}}</td>
+        <td>{{crypto.price}}</td>
+        <td>{{crypto.change}}</td>
+        <td>{{crypto.percentage_change}}</td>
+        {% if crypto.gain == 1 %}
+        <td class="positive"><i class="icon checkmark"></i></td>
+        <tr style="color:black;"></tr>
+        {% else %}
+        <td></td>
+        {% endif %}
+        {% if crypto.pain == 1 %}
+        <td class="negative"><i class="icon close"></i></td>
+        {% else %}
+        <td></td>
+        {% endif %}
       </tr>
-      <tr class="positive">
-        <td>Jimmy</td>
-        <td><i class="icon checkmark"></i> Approved</td>
-        <td>None</td>
-      </tr>
-      <tr>
-        <td>Jamie</td>
-        <td>Unknown</td>
-        <td class="positive"><i class="icon close"></i> Requires call</td>
-      </tr>
-      <tr class="negative">
-        <td>Jill</td>
-        <td>Unknown</td>
-        <td>None</td>
-      </tr>
+      {% endfor %}
     </tbody>
   </table>
 {% endblock %}

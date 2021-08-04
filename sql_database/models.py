@@ -5,7 +5,7 @@ from .database import Base
 class Cryptocurrency(Base):
     __tablename__ = "cryptocurrencies"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(String, primary_key=True, index=True)
     symbol = Column(String, unique=True, index=True) 
     price = Column(Numeric(30, 6))
     change = Column(Numeric(10, 6))

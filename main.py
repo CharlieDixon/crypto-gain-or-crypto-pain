@@ -42,13 +42,14 @@ def get_all_coins():
     """At initiation of API fetches information on all trading pairs and adds to database."""
     db = SessionLocal()
     pair_tickers = client.get_ticker()
+   
     for pair in pair_tickers:
         exists = db.query(Cryptocurrency).filter(Cryptocurrency.symbol == pair["symbol"]).first()
         if not exists:
             crypto = Cryptocurrency()
-            crypto.id = uuid.uuid4()
+            crypto.id = str(uuid.uuid4())
             crypto.symbol = pair["symbol"]
-            crypto.price = float(pair["weightedAvgPrice"])
+            crypto.price = pair["weightedAvgPrice"]
             print(crypto.price)
             print(type(crypto.price))
             crypto.change = str(pair["priceChange"])
@@ -61,7 +62,7 @@ def get_all_coins():
 get_all_coins()
 
 
-def fetch_crypto_data(id: int):
+def fetch_crypto_data(id: str):
     """Connects to local database and returns data from binance API for the currency pair the user has inputted before committing to database."""
     db = SessionLocal()
     crypto = db.query(Cryptocurrency).filter(Cryptocurrency.id == id).first()

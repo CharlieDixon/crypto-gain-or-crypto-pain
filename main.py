@@ -92,7 +92,7 @@ def home(
     cryptos = db.query(Cryptocurrency)
 
     if search:
-        cryptos = cryptos.filter(Cryptocurrency.symbol.like(f'%{search}%'))
+        cryptos = cryptos.filter(Cryptocurrency.symbol.ilike(f'%{search}%'))
 
     return templates.TemplateResponse(
         "homepage.html", {"request": request, "cryptos": cryptos}

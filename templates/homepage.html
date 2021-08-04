@@ -12,15 +12,15 @@
 </style>
 <form>
 <div class="ui left icon input">
-    <input name="search" type="text" placeholder="Search..." data-com.bitwarden.browser.user-edited="yes">
+    <input name="search" type="text" placeholder="Search..." data-com.bitwarden.browser.user-edited="yes" value={{ search }}>
     <i class="search icon"></i>
 </div>
 <div class="ui checkbox">
-    <input name="gain" type="checkbox" name="gain">
+    <input name="gain" type="checkbox" name="gain" {% if gain %}checked="checked"{% endif %}>
     <label>Gain</label>
 </div>
 <div class="ui checkbox">
-    <input name="pain" type="checkbox" name="pain">
+    <input name="pain" type="checkbox" name="pain" {% if pain %}checked="checked"{% endif %}>
     <label>Pain</label>
 </div>
 <button type="submit" class="ui button primary">
@@ -34,8 +34,8 @@
 <table class="ui celled table">
     <thead>
       <tr>
-        <th>Cryptocurrency</th>
-        <th>Price</th>
+        <th>Cryptocurrency Pair</th>
+        <th>Exchange Rate</th>
         <th>Price Change</th>
         <th>Percentage Change</th>
         <th>Gain</th>

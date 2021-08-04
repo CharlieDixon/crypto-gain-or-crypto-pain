@@ -105,7 +105,7 @@ def home(
         cryptos = cryptos.filter(Cryptocurrency.pain == 1)
 
     return templates.TemplateResponse(
-        "homepage.html", {"request": request, "cryptos": cryptos}
+        "homepage.html", {"request": request, "cryptos": cryptos, "search": search, "gain": gain, "pain": pain}
     )
 
 

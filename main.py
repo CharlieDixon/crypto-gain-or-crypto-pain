@@ -25,6 +25,7 @@ models.Base.metadata.create_all(bind=engine)
 class CryptoRequest(BaseModel):
     symbol: str
 
+
 def get_db():
     """Creates local database session - necessary for all API calls that require reading/writing to database"""
     db = SessionLocal()
@@ -33,18 +34,23 @@ def get_db():
     finally:
         db.close()
 
+
 def get_list_of_pairs():
     pairs = client.get_all_tickers()
-    return [pair['symbol'] for pair in pairs]
-    
+    return [pair["symbol"] for pair in pairs]
+
 
 def get_all_coins():
     """At initiation of API fetches information on all trading pairs and adds to database."""
     db = SessionLocal()
     pair_tickers = client.get_ticker()
-   
+
     for pair in pair_tickers:
-        exists = db.query(Cryptocurrency).filter(Cryptocurrency.symbol == pair["symbol"]).first()
+        exists = (
+            db.query(Cryptocurrency)
+            .filter(Cryptocurrency.symbol == pair["symbol"])
+            .first()
+        )
         if not exists:
             crypto = Cryptocurrency()
             crypto.id = str(uuid.uuid4())
@@ -58,6 +64,7 @@ def get_all_coins():
             crypto.pain = True if float(crypto.percentage_change) < -5 else False
             db.add(crypto)
     db.commit()
+
 
 get_all_coins()
 
@@ -79,13 +86,17 @@ def fetch_crypto_data(id: str):
 
 
 @app.get("/")
-def home(request: Request, search=None, gain=None, pain=None, db: Session = Depends(get_db)):
+def home(
+    request: Request, search=None, gain=None, pain=None, db: Session = Depends(get_db)
+):
     cryptos = db.query(Cryptocurrency)
 
     if search:
-        cryptos = cryptos.filter(Cryptocurrency.symbol == search)
-    
-    return templates.TemplateResponse("homepage.html", {"request": request, "cryptos": cryptos})
+        cryptos = cryptos.filter(Cryptocurrency.symbol.like(f'%{search}%'))
+
+    return templates.TemplateResponse(
+        "homepage.html", {"request": request, "cryptos": cryptos}
+    )
 
 
 @app.post("/new_currency")
@@ -104,4 +115,3 @@ async def add_new_currency_to_db(
     background_tasks.add_task(fetch_crypto_data, crypto.id)
 
     return {f"{crypto.symbol}": "Added"}
-

@@ -3,6 +3,7 @@ from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
 from sql_database import models
 from sqlalchemy.orm import Session
+from sqlalchemy import or_
 from sql_database.database import SessionLocal, engine
 from pydantic import BaseModel
 from sql_database.models import Cryptocurrency
@@ -93,6 +94,15 @@ def home(
 
     if search:
         cryptos = cryptos.filter(Cryptocurrency.symbol.ilike(f'%{search}%'))
+    
+    if gain and pain:
+        cryptos = cryptos.filter(or_(Cryptocurrency.gain == 1, Cryptocurrency.pain == 1))
+
+    elif gain:
+        cryptos = cryptos.filter(Cryptocurrency.gain == 1)
+
+    elif pain:
+        cryptos = cryptos.filter(Cryptocurrency.pain == 1)
 
     return templates.TemplateResponse(
         "homepage.html", {"request": request, "cryptos": cryptos}

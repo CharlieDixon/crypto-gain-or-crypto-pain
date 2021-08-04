@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from sql_database.models import Cryptocurrency
 import configparser
 from binance import Client
+import uuid
 
 cfg = configparser.ConfigParser()
 cfg.read("binance_api_key.cfg")  # access api credentials
@@ -31,6 +32,33 @@ def get_db():
         yield db
     finally:
         db.close()
+
+def get_list_of_pairs():
+    pairs = client.get_all_tickers()
+    return [pair['symbol'] for pair in pairs]
+    
+
+def get_all_coins():
+    """At initiation of API fetches information on all trading pairs and adds to database."""
+    db = SessionLocal()
+    pair_tickers = client.get_ticker()
+    for pair in pair_tickers:
+        exists = db.query(Cryptocurrency).filter(Cryptocurrency.symbol == pair["symbol"]).first()
+        if not exists:
+            crypto = Cryptocurrency()
+            crypto.id = uuid.uuid4()
+            crypto.symbol = pair["symbol"]
+            crypto.price = float(pair["weightedAvgPrice"])
+            print(crypto.price)
+            print(type(crypto.price))
+            crypto.change = str(pair["priceChange"])
+            crypto.percentage_change = str(pair["priceChangePercent"])
+            crypto.gain = True if float(crypto.percentage_change) > 5 else False
+            crypto.pain = True if float(crypto.percentage_change) < -5 else False
+            db.add(crypto)
+    db.commit()
+
+get_all_coins()
 
 
 def fetch_crypto_data(id: int):
@@ -75,3 +103,4 @@ async def add_new_currency_to_db(
     background_tasks.add_task(fetch_crypto_data, crypto.id)
 
     return {f"{crypto.symbol}": "Added"}
+

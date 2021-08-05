@@ -12,7 +12,7 @@
 </style>
 <form>
 <div class="ui left icon input">
-    <input name="search" type="text" placeholder="Search..." data-com.bitwarden.browser.user-edited="yes" value={{ search }}>
+    <input name="search" type="text" placeholder="Search..." data-com.bitwarden.browser.user-edited="yes" value={{ search or '' }}>
     <i class="search icon"></i>
 </div>
 <div class="ui checkbox">
@@ -35,6 +35,8 @@
     <thead>
       <tr>
         <th>Cryptocurrency Pair</th>
+        <th>Base Asset</th>
+        <th>Quote Asset</th>
         <th>Exchange Rate</th>
         <th>Price Change</th>
         <th>Percentage Change</th>
@@ -46,6 +48,8 @@
         {% for crypto in cryptos %}
       <tr>
         <td>{{crypto.symbol}}</td>
+        <td>{{crypto.base_asset}}</td>
+        <td>{{crypto.quote_asset}}</td>
         <td>{{crypto.price}}</td>
         <td>{{crypto.change}}</td>
         <td>{{crypto.percentage_change}}</td>

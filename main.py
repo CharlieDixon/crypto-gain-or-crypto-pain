@@ -36,15 +36,24 @@ def get_db():
         db.close()
 
 
-def get_list_of_pairs():
-    pairs = client.get_all_tickers()
-    return [pair["symbol"] for pair in pairs]
+# def get_list_of_pairs():
+#     pairs = client.get_all_tickers()
+#     return [pair["symbol"] for pair in pairs]
+
+
+def get_base_and_quote_assets():
+    exchange_info = client.get_exchange_info()
+    assets = {}
+    for pair in exchange_info["symbols"]:
+        assets[pair["symbol"]] = pair["baseAsset"], pair["quoteAsset"]
+    return assets
 
 
 def get_all_coins():
     """At initiation of API fetches information on all trading pairs and adds to database."""
     db = SessionLocal()
     pair_tickers = client.get_ticker()
+    assets = get_base_and_quote_assets()
 
     for pair in pair_tickers:
         exists = (
@@ -56,13 +65,13 @@ def get_all_coins():
             crypto = Cryptocurrency()
             crypto.id = str(uuid.uuid4())
             crypto.symbol = pair["symbol"]
-            crypto.price = pair["weightedAvgPrice"]
-            print(crypto.price)
-            print(type(crypto.price))
-            crypto.change = str(pair["priceChange"])
-            crypto.percentage_change = str(pair["priceChangePercent"])
-            crypto.gain = True if float(crypto.percentage_change) > 5 else False
-            crypto.pain = True if float(crypto.percentage_change) < -5 else False
+            crypto.base_asset = assets.get(pair["symbol"])[0]
+            crypto.quote_asset = assets.get(pair["symbol"])[1]
+            crypto.price = float(pair["weightedAvgPrice"])
+            crypto.change = float(pair["priceChange"])
+            crypto.percentage_change = float(pair["priceChangePercent"])
+            crypto.gain = True if crypto.percentage_change > 5 else False
+            crypto.pain = True if crypto.percentage_change < -5 else False
             db.add(crypto)
     db.commit()
 
@@ -93,10 +102,12 @@ def home(
     cryptos = db.query(Cryptocurrency)
 
     if search:
-        cryptos = cryptos.filter(Cryptocurrency.symbol.ilike(f'%{search}%'))
-    
+        cryptos = cryptos.filter(Cryptocurrency.symbol.ilike(f"%{search}%"))
+
     if gain and pain:
-        cryptos = cryptos.filter(or_(Cryptocurrency.gain == 1, Cryptocurrency.pain == 1))
+        cryptos = cryptos.filter(
+            or_(Cryptocurrency.gain == 1, Cryptocurrency.pain == 1)
+        )
 
     elif gain:
         cryptos = cryptos.filter(Cryptocurrency.gain == 1)
@@ -105,7 +116,14 @@ def home(
         cryptos = cryptos.filter(Cryptocurrency.pain == 1)
 
     return templates.TemplateResponse(
-        "homepage.html", {"request": request, "cryptos": cryptos, "search": search, "gain": gain, "pain": pain}
+        "homepage.html",
+        {
+            "request": request,
+            "cryptos": cryptos,
+            "search": search,
+            "gain": gain,
+            "pain": pain,
+        },
     )
 
 

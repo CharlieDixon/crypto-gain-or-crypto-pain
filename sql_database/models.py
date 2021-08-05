@@ -7,6 +7,8 @@ class Cryptocurrency(Base):
 
     id = Column(String, primary_key=True, index=True)
     symbol = Column(String, unique=True, index=True) 
+    base_asset = Column(String, unique=False, index=True)
+    quote_asset = Column(String, unique=False, index=True)
     price = Column(Numeric(30, 6))
     change = Column(Numeric(10, 6))
     percentage_change = Column(Numeric(10, 2))

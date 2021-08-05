@@ -9,10 +9,12 @@
         font-size: 0.9em;
         min-width: 400px;
     }
+    /* Required field in search box prevents capitalisation of placeholder. */
+    #userInput:valid { text-transform: uppercase; }
 </style>
 <form>
 <div class="ui left icon input">
-    <input name="search" type="text" id="userInput" placeholder="Search..." onkeyup="filterTable()" data-com.bitwarden.browser.user-edited="yes" value={{ search or '' }}>
+    <input name="search" type="text" id="userInput" required="required" placeholder="Search..." onkeyup="filterTable()" data-com.bitwarden.browser.user-edited="yes" value={{ search or '' }}>
     <i class="search icon"></i>
 </div>
 <div class="ui checkbox">
@@ -46,7 +48,7 @@
     </thead>
     <tbody>
         {% for crypto in cryptos %}
-      <tr>
+      <tr {% if crypto.gain == 1 %} style="background-color:#fcfff5" {% endif %} {% if crypto.pain == 1 %} style="background-color:#fef5f6" {% endif %}>
         <td>{{crypto.symbol}}</td>
         <td>{{crypto.base_asset}}</td>
         <td>{{crypto.quote_asset}}</td>
@@ -90,21 +92,5 @@
       }
     }
     </script>
-    <script>
-        $(function () {
-            $.each($("#cryptoTable tr"), function (i, v) {
-                var txt = $(this).find("td:eq(6)").text();
-                if (parseFloat(txt) > 5 ) {
-                    $(this).css("background-color", "#fcfff5");
-                } 
-                if (txt == true) {
-                    $(this).css("background-color", "#f0f5e4");
-                } 
-                else {
-                    $(this).addClass("primary");
-                }
-            });
-        });
-        </script>
-    // $(this).css('background-color', "red") gain #fcfff5 pain #fef5f6 gain alt: #f0f5e4
+    
 {% endblock %}

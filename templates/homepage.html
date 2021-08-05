@@ -12,7 +12,7 @@
 </style>
 <form>
 <div class="ui left icon input">
-    <input name="search" type="text" placeholder="Search..." data-com.bitwarden.browser.user-edited="yes" value={{ search or '' }}>
+    <input name="search" type="text" id="userInput" placeholder="Search..." onkeyup="filterTable()" data-com.bitwarden.browser.user-edited="yes" value={{ search or '' }}>
     <i class="search icon"></i>
 </div>
 <div class="ui checkbox">
@@ -31,7 +31,7 @@
 </button>
 </form>
 
-<table class="ui celled table">
+<table class="ui celled table" id="cryptoTable">
     <thead>
       <tr>
         <th>Cryptocurrency Pair</th>
@@ -67,4 +67,44 @@
       {% endfor %}
     </tbody>
   </table>
+  <script>
+    function filterTable() {
+      // Declare variables
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("userInput");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("cryptoTable");
+      tr = table.getElementsByTagName("tr");
+    
+      // Loop through all table rows, and hide those who don't match the search query
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+          txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }
+      }
+    }
+    </script>
+    <script>
+        $(function () {
+            $.each($("#cryptoTable tr"), function (i, v) {
+                var txt = $(this).find("td:eq(6)").text();
+                if (parseFloat(txt) > 5 ) {
+                    $(this).css("background-color", "#fcfff5");
+                } 
+                if (txt == true) {
+                    $(this).css("background-color", "#f0f5e4");
+                } 
+                else {
+                    $(this).addClass("primary");
+                }
+            });
+        });
+        </script>
+    // $(this).css('background-color', "red") gain #fcfff5 pain #fef5f6 gain alt: #f0f5e4
 {% endblock %}

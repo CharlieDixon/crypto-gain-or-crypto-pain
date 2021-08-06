@@ -1,5 +1,6 @@
-from fastapi import FastAPI, Path, Depends, BackgroundTasks
+from fastapi import FastAPI, Depends, BackgroundTasks
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 from starlette.requests import Request
 from sql_database import models
 from sqlalchemy.orm import Session
@@ -19,6 +20,8 @@ client = Client(cfg.get("KEYS", "api_key"), cfg.get("KEYS", "api_secret_key"))
 templates = Jinja2Templates(directory="templates")
 
 app = FastAPI()
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -93,7 +96,6 @@ def fetch_crypto_data(id: str):
 
     db.add(crypto)
     db.commit()
-
 
 @app.get("/")
 def home(

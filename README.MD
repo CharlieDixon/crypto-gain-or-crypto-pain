@@ -3,9 +3,11 @@ Provides a frontend user interface for querying the past 24hrs of data on crypto
 
 ## Instructions
 After cloning/forking the repo, install the dependencies:
-`pip install -r requirements.txt`
+```
+pip install -r requirements.txt
+```
 To inititate the app:
-```powershell
+```
 uvicorn main:app
 ```
 Click url link displayed in terminal or open browser at http://127.0.0.1:8000 to view searchable table.

@@ -11,8 +11,13 @@
         font-size: 0.9em;
         min-width: 400px;
     }
+    .hide-value {
+   position: absolute !important;
+   top: -9999px !important;
+   left: -9999px !important;
+}
     /* Required field in search box prevents capitalisation of placeholder. */
-    #userInput:valid { text-transform: uppercase; }
+    #userInput:valid { text-transform: uppercase;}
 </style>
 <form>
 <div class="ui left icon input">
@@ -44,8 +49,7 @@
         <th>Exchange Rate</th>
         <th>Price Change</th>
         <th>Percentage Change</th>
-        <th>Gain</th>
-        <th>Pain</th>
+        <th>Gain/Pain</th>
       </tr>
     </thead>
     <tbody>
@@ -58,14 +62,11 @@
         <td>{{crypto.change}}</td>
         <td>{{crypto.percentage_change}}</td>
         {% if crypto.gain == 1 %}
-        <td style="text-align: center; vertical-align: middle;"><i class="icon checkmark" style="color:green" ></i></td>
+        <td style="text-align: center; vertical-align: middle;"><div class="hide-value">{{crypto.percentage_change}}</div><i class="icon checkmark" style="color:green; visibility: visible" ></i></td>
+        {% elif crypto.pain == 1 %}
+        <td style="text-align: center; vertical-align: middle;"><div class="hide-value">{{crypto.percentage_change}}</div><i class="icon close" style="color:crimson" ></i></td>
         {% else %}
-        <td style="text-align: center; vertical-align: middle;"></td>
-        {% endif %}
-        {% if crypto.pain == 1 %}
-        <td style="text-align: center; vertical-align: middle;"><i class="icon close" style="color:crimson" ></i></td>
-        {% else %}
-        <td style="text-align: center; vertical-align: middle;"></td>
+        <td style="text-align: center; vertical-align: middle;"><div class="hide-value">{{crypto.percentage_change}}</div></td>
         {% endif %}
       </tr>
       {% endfor %}

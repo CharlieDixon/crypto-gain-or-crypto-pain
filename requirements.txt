@@ -3,3 +3,4 @@ sqlalchemy
 uvicorn
 python-binance
 Jinja2
+httpx

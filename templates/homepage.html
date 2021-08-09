@@ -10,8 +10,23 @@
         })
         console.log( "run!" );
         $("#submit_trade").click(function() {
-            var symbol = $("#coin_to_buy").val() + $("#coin_to_sell").val();
-            console.log(symbol)
+            var coin_to_buy = $("#coin_to_buy").val();
+            var coin_to_sell = $("#coin_to_sell").val();
+            var amount = $("#amount").val();
+            console.log(coin_to_buy + coin_to_sell + amount);
+            var dataObject = JSON.stringify({
+                    'base_asset': coin_to_buy,
+                    'quote_asset': coin_to_sell,
+                    'user_amount': amount,
+                });
+            console.log(dataObject)
+            $.ajax({
+                url: "/gain_or_pain",
+                type: "POST",
+                contentType: "application/json",
+                data: dataObject,
+                datatype: "json"
+            })
         })
     })
 </script>
@@ -97,7 +112,7 @@
     <h3>Try your luck!</h3>
     <p><label>Coin to buy: </label><input type="text" id="coin_to_buy"></p>
     <p><label>Coin to sell: </label><input type="text" id="coin_to_sell"></p>
-    <p><label>Amount to sell: </label><input type="text"></p>
+    <p><label>Amount to sell: </label><input type="text" id="amount"></p>
     <p><input type="submit" value="Submit trade"></p>
     <p>
         <input type="submit" value="Nope" class="ui black deny button">

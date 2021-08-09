@@ -14,7 +14,10 @@ import configparser
 from binance import Client
 import uuid
 import httpx
+from resources.currency_info import currency_codes, coin_list
+from forex_python.converter import CurrencyRates
 
+coin_list = coin_list()
 cfg = configparser.ConfigParser()
 cfg.read("binance_api_key.cfg")  # access api credentials
 
@@ -52,14 +55,7 @@ def get_base_and_quote_assets():
     return assets
 
 
-def coin_list():
-    res = httpx.get("https://api.coingecko.com/api/v3/coins/list")
-    coin_list = res.json()
-    return coin_list
 
-
-# TODO: find better way of having available for other functions without repeatedly calling
-coin_list = coin_list()
 
 
 def convert_to_dollars(gecko_id):
@@ -100,27 +96,39 @@ def get_all_coins():
 get_all_coins()
 
 
-def fetch_crypto_data(id: int, user_amount: float):
+def fetch_crypto_data(id: int, user_amount: float, symbol: str):
     """Connects to local database and returns data from binance API for the currency pair the user has inputted before committing to database."""
-    db = SessionLocal()
     conn = engine.connect()
+    # implicitly joins on foreign key defined in models.py
+    selection = (
+        select(Cryptocurrency, Trades.user_amount)
+        .filter(Cryptocurrency.symbol == symbol)
+        .join(Trades)
+    )
+    result = conn.execute(selection)
+    row = result.fetchone()
+    conn.close()
+
+    db = SessionLocal()
+
     trade = db.query(Trades).filter(Trades.id == id).first()
 
-    selection = select(Cryptocurrency)
-    # implicitly joins on foreign key defined in models.py
-    joined = selection.join(Trades)
-    result = conn.execute(joined)
-    row = result.fetchone()
     percentage_change_for_selected_pair = float(row._mapping["percentage_change"])
     before_trade = float(user_amount)
-    after_trade = before_trade + (float(row._mapping["change"]) * before_trade)
+    after_trade = before_trade + (float(row._mapping["percentage_change"])/100 * before_trade)
     gecko_coin_list = coin_list
-    gecko_id, symbol, name = [
-        coin
-        for coin in gecko_coin_list
-        if coin["symbol"] == row._mapping["quote_asset"].lower()
-    ][0].values()
-    value_of_coin_in_dollars = convert_to_dollars(gecko_id)
+    if row._mapping["quote_asset"].upper() in currency_codes:
+        exchange = CurrencyRates()
+        value_of_coin_in_dollars = exchange.get_rate(
+            row._mapping["quote_asset"].upper(), "USD"
+        )
+    else:
+        gecko_id, symb, name = [
+            coin
+            for coin in gecko_coin_list
+            if coin["symbol"] == row._mapping["quote_asset"].lower()
+        ][0].values()
+        value_of_coin_in_dollars = convert_to_dollars(gecko_id)
     before_trade_in_dollars = before_trade * value_of_coin_in_dollars
     after_trade_in_dollars = after_trade * value_of_coin_in_dollars
     gain_or_pain_in_dollars = after_trade_in_dollars - before_trade_in_dollars
@@ -178,6 +186,8 @@ async def user_gain_or_pain(
     db.add(trade)
     db.commit()
 
-    background_tasks.add_task(fetch_crypto_data, trade.id, trade.user_amount)
+    background_tasks.add_task(
+        fetch_crypto_data, trade.id, trade.user_amount, trade.symbol
+    )
 
     return {f"{trade.symbol}": "Added"}

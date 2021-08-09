@@ -1,6 +1,20 @@
 {% extends "layout.html" %}
 
 {% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+<script>
+    $( document ).ready(function() {
+        $("#try_your_luck").click(function() {
+            $("#ex1").modal();
+        })
+        console.log( "run!" );
+        $("#submit_trade").click(function() {
+            var symbol = $("#coin_to_buy").val() + $("#coin_to_sell").val();
+            console.log(symbol)
+        })
+    })
+</script>
 <script src="static/sortable.min.js"></script>
 <link rel="stylesheet" href="static/sortable.min.css">
 <style>
@@ -39,6 +53,12 @@
     Reset
 </button>
 </form>
+<button id="try_your_luck" class="ui animated button green" tabindex="0">
+    <div class="visible content">Try your luck!</div>
+    <div class="hidden content">
+      <i class="right arrow icon"></i>
+    </div>
+</button>
 
 <table class="ui celled table sorter" id="cryptoTable">
     <thead>
@@ -72,6 +92,24 @@
       {% endfor %}
     </tbody>
   </table>
+
+  <div id="ex1" class="trade_form modal">
+    <h3>Try your luck!</h3>
+    <p><label>Coin to buy: </label><input type="text" id="coin_to_buy"></p>
+    <p><label>Coin to sell: </label><input type="text" id="coin_to_sell"></p>
+    <p><label>Amount to sell: </label><input type="text"></p>
+    <p><input type="submit" value="Submit trade"></p>
+    <p>
+        <input type="submit" value="Nope" class="ui black deny button">
+        <input type="submit" value="Submit trade" class="ui positive right labeled icon button" id="submit_trade">
+    </p>
+
+    <a href="#close-modal" rel="modal:close" class="close-modal ">Close</a>
+  
+  <p><a href="#ex1" rel="modal:open">Open Modal</a></p>
+
+  
+    
   <script>
     function filterTable() {
       // Declare variables

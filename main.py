@@ -55,9 +55,6 @@ def get_base_and_quote_assets():
     return assets
 
 
-
-
-
 def convert_to_dollars(gecko_id):
     """Uses gecko_id to get current price of a given coin (quote asset) in dollars from coingecko's public API and returns it"""
     params = {"ids": f"{gecko_id}", "vs_currencies": "usd"}
@@ -115,7 +112,9 @@ def fetch_crypto_data(id: int, user_amount: float, symbol: str):
 
     percentage_change_for_selected_pair = float(row._mapping["percentage_change"])
     before_trade = float(user_amount)
-    after_trade = before_trade + (float(row._mapping["percentage_change"])/100 * before_trade)
+    after_trade = before_trade + (
+        float(row._mapping["percentage_change"]) / 100 * before_trade
+    )
     gecko_coin_list = coin_list
     if row._mapping["quote_asset"].upper() in currency_codes:
         exchange = CurrencyRates()

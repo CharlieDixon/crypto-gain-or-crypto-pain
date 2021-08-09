@@ -6,9 +6,8 @@
 <script>
     $( document ).ready(function() {
         $("#try_your_luck").click(function() {
-            $("#ex1").modal();
+            $("#trade-form").modal();
         })
-        console.log( "run!" );
         $("#submit_trade").click(function() {
             var coin_to_buy = $("#coin_to_buy").val();
             var coin_to_sell = $("#coin_to_sell").val();
@@ -19,7 +18,6 @@
                     'quote_asset': coin_to_sell,
                     'user_amount': amount,
                 });
-            console.log(dataObject)
             $.ajax({
                 url: "/gain_or_pain",
                 type: "POST",
@@ -108,20 +106,17 @@
     </tbody>
   </table>
 
-  <div id="ex1" class="trade_form modal">
+  <div id="trade-form" class="trade_form modal">
     <h3>Try your luck!</h3>
     <p><label>Coin to buy: </label><input type="text" id="coin_to_buy"></p>
     <p><label>Coin to sell: </label><input type="text" id="coin_to_sell"></p>
     <p><label>Amount to sell: </label><input type="text" id="amount"></p>
-    <p><input type="submit" value="Submit trade"></p>
     <p>
         <input type="submit" value="Nope" class="ui black deny button">
         <input type="submit" value="Submit trade" class="ui positive right labeled icon button" id="submit_trade">
     </p>
+    </div>
 
-    <a href="#close-modal" rel="modal:close" class="close-modal ">Close</a>
-  
-  <p><a href="#ex1" rel="modal:open">Open Modal</a></p>
 
   
     

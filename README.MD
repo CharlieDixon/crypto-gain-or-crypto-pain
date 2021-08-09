@@ -3,6 +3,7 @@ Ever wanted to see how cryptocurrencies are faring against each other? Look no f
 
 ## How it works
 Provides an API with a frontend user interface for querying the past 24hrs of data on cryptocurrency trading pairs from binance. The data is fetched through binance's API and is hosted on a local sqlite database generated/updated on app startup. It shows price changes for trading pairs and indicates winners and losers in the past 24hrs (+/- 5% price change). Data is sortable and can be filtered by user input.
+Users can also submit their own trades and see how they would have fared.
 
 ## Instructions
 > You will need a binance API token in order for interactions with their API to work. Instructions for how to create one can be found here: https://www.binance.com/en/support/faq/360002502072. 
@@ -13,6 +14,7 @@ Once you have your token and secret token these should be placed in a .cfg file 
 api_key: your-api-key
 api_secret_key: your-api_secret_key
 ```
+Install requirements
 ```
 pip install -r requirements.txt
 ```
@@ -27,7 +29,7 @@ Credit to Jonas Earendel for the original JavaScript and CSS which I adapted for
 ## Web Framework
 - `FastAPI`
 ## Frontend
-- `JavaScript`
+- `JavaScript/jQuery`
 - `Jinja2 templating engine`
 - `HTML & CSS`
 ## Backend

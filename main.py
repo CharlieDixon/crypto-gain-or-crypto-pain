@@ -93,8 +93,7 @@ def get_all_coins():
 get_all_coins()
 
 
-def fetch_crypto_data(id: int, user_amount: float, symbol: str):
-    """Connects to local database and returns data from binance API for the currency pair the user has inputted before committing to database."""
+def select_trade_row(symbol: str):
     conn = engine.connect()
     # implicitly joins on foreign key defined in models.py
     selection = (
@@ -105,6 +104,12 @@ def fetch_crypto_data(id: int, user_amount: float, symbol: str):
     result = conn.execute(selection)
     row = result.fetchone()
     conn.close()
+    return row
+
+
+def fetch_crypto_data(id: int, user_amount: float, symbol: str):
+    """Connects to local database and returns data from binance API for the currency pair the user has inputted before committing to database."""
+    row = select_trade_row(symbol)
 
     db = SessionLocal()
 
@@ -169,7 +174,7 @@ def home(
     )
 
 
-@app.post("/gain_or_pain")
+@app.post("/gain-or-pain")
 async def user_gain_or_pain(
     trade_request: TradeRequest,
     background_tasks: BackgroundTasks,
@@ -189,4 +194,16 @@ async def user_gain_or_pain(
         fetch_crypto_data, trade.id, trade.user_amount, trade.symbol
     )
 
-    return {f"{trade.symbol}": "Added"}
+    return {f"{trade.symbol}": "Submitted"}
+
+
+@app.get("/trade-db")
+def home(request: Request, db: Session = Depends(get_db)):
+    trades = db.query(Trades).all()
+    # gets last db entry i.e. last trade submitted, change to use IDs
+    base_asset, quote_asset, user_amount = (
+        trades[-1].base_asset,
+        trades[-1].quote_asset,
+        trades[-1].user_amount,
+    )
+    breakpoint()

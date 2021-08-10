@@ -12,7 +12,6 @@
             var coin_to_buy = $("#coin_to_buy").val();
             var coin_to_sell = $("#coin_to_sell").val();
             var amount = $("#amount").val();
-            console.log(coin_to_buy + coin_to_sell + amount);
             var dataObject = JSON.stringify({
                     'base_asset': coin_to_buy,
                     'quote_asset': coin_to_sell,
@@ -25,7 +24,9 @@
                 data: dataObject,
                 datatype: "json"
             })
+            $.modal.close();
         })
+        
     })
 </script>
 <script src="static/sortable.min.js"></script>

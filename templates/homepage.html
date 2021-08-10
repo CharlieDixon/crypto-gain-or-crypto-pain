@@ -18,14 +18,27 @@
                     'user_amount': amount,
                 });
             $.ajax({
-                url: "/gain_or_pain",
+                url: "/gain-or-pain",
                 type: "POST",
                 contentType: "application/json",
                 data: dataObject,
                 datatype: "json"
             })
             $.modal.close();
+            $.get( "/trade-db", function( data ) {
+                $( ".result" ).html( data );
+                console.log(data);
+                $( "#result" ).data( "test", data['gain_or_pain_in_dollars'] );
+                if (data['gain_or_pain_in_dollars'] > 0) { $( "#result" ).text( "Great success!"); }
+                else {
+                    $( "#result" ).text( "Massive failure :(");
+                    }
+            });
+            $("#popup").modal();
+
+
         })
+        
         
     })
 </script>
@@ -107,7 +120,7 @@
     </tbody>
   </table>
 
-  <div id="trade-form" class="trade_form modal">
+  <div id="trade-form" class="window modal">
     <h3>Try your luck!</h3>
     <p><label>Coin to buy: </label><input type="text" id="coin_to_buy"></p>
     <p><label>Coin to sell: </label><input type="text" id="coin_to_sell"></p>
@@ -117,6 +130,29 @@
         <input type="submit" value="Submit trade" class="ui positive right labeled icon button" id="submit_trade">
     </p>
     </div>
+
+    <div id="popup" class="modal" style="vertical-align: middle;">
+        <div class="image content">
+          <div class="ui medium image">
+            <img src="https://cdn.pixabay.com/photo/2019/08/20/13/56/money-4418858_1280.jpg">
+          </div>
+          <div class="description">
+            <div id="result" class="ui header"></div>
+            <p>Amount lost:</p>
+            <p>Looks like you've lost out this time :(</p>
+            <p>Try again?</p>
+          </div>
+        </div>
+        <div class="actions">
+          <div class="ui black deny button">
+            Nope
+          </div>
+          <div class="ui positive right labeled icon button">
+            Sure...
+            <i class="checkmark icon"></i>
+          </div>
+        </div>
+      </div>
 
 
   

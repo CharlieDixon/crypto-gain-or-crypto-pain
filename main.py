@@ -137,6 +137,7 @@ def fetch_crypto_data(id: int, user_amount: float, symbol: str):
     after_trade_in_dollars = after_trade * value_of_coin_in_dollars
     gain_or_pain_in_dollars = after_trade_in_dollars - before_trade_in_dollars
     trade.gain_or_pain_in_dollars = gain_or_pain_in_dollars
+    trade.percentage_change_for_selected_pair = percentage_change_for_selected_pair
 
     db.add(trade)
     db.commit()
@@ -200,10 +201,18 @@ async def user_gain_or_pain(
 @app.get("/trade-db")
 def home(request: Request, db: Session = Depends(get_db)):
     trades = db.query(Trades).all()
-    # gets last db entry i.e. last trade submitted, change to use IDs
-    base_asset, quote_asset, user_amount = (
+    # gets last db entry i.e. last trade submitted: change to use IDs
+    (
+        base_asset,
+        quote_asset,
+        user_amount,
+        gain_or_pain_in_dollars,
+        percentage_change_for_selected_pair,
+    ) = (
         trades[-1].base_asset,
         trades[-1].quote_asset,
         trades[-1].user_amount,
+        trades[-1].gain_or_pain_in_dollars,
+        trades[-1].percentage_change_for_selected_pair,
     )
-    breakpoint()
+    return {"gain_or_pain_in_dollars": gain_or_pain_in_dollars, "percentage_change": percentage_change_for_selected_pair}

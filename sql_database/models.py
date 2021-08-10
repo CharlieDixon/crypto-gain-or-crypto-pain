@@ -26,6 +26,7 @@ class Trades(Base):
     quote_asset = Column(String, index=True)
     symbol = Column(String, ForeignKey("cryptocurrencies.symbol"))
     user_amount = Column(Numeric(30, 6))
+    percentage_change_for_selected_pair = Column(Numeric(10,2))
     gain_or_pain_in_dollars = Column(Numeric(10, 2))
     
     # ba_in_dollars = Column(Numeric(30, 2))

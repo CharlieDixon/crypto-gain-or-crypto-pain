@@ -136,6 +136,7 @@ def fetch_crypto_data(id: int, user_amount: float, symbol: str):
     before_trade_in_dollars = before_trade * value_of_coin_in_dollars
     after_trade_in_dollars = after_trade * value_of_coin_in_dollars
     gain_or_pain_in_dollars = after_trade_in_dollars - before_trade_in_dollars
+    trade.before_trade_in_dollars = before_trade_in_dollars
     trade.gain_or_pain_in_dollars = gain_or_pain_in_dollars
     trade.percentage_change_for_selected_pair = percentage_change_for_selected_pair
 
@@ -208,11 +209,14 @@ def home(request: Request, db: Session = Depends(get_db)):
         user_amount,
         gain_or_pain_in_dollars,
         percentage_change_for_selected_pair,
+        before_trade_in_dollars,
     ) = (
         trades[-1].base_asset,
         trades[-1].quote_asset,
         trades[-1].user_amount,
         trades[-1].gain_or_pain_in_dollars,
         trades[-1].percentage_change_for_selected_pair,
+        trades[-1].before_trade_in_dollars,
     )
-    return {"gain_or_pain_in_dollars": gain_or_pain_in_dollars, "percentage_change": percentage_change_for_selected_pair}
+    total_user_dollars = float(before_trade_in_dollars) + float(gain_or_pain_in_dollars)
+    return {"total_user_dollars": total_user_dollars, "gain_or_pain_in_dollars": gain_or_pain_in_dollars, "percentage_change": percentage_change_for_selected_pair}

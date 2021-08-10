@@ -219,4 +219,5 @@ def home(request: Request, db: Session = Depends(get_db)):
         trades[-1].before_trade_in_dollars,
     )
     total_user_dollars = float(before_trade_in_dollars) + float(gain_or_pain_in_dollars)
-    return {"total_user_dollars": total_user_dollars, "gain_or_pain_in_dollars": gain_or_pain_in_dollars, "percentage_change": percentage_change_for_selected_pair}
+    before_dollars = float(before_trade_in_dollars)
+    return {"total_user_dollars": total_user_dollars, "before_dollars": before_dollars, "gain_or_pain_in_dollars": gain_or_pain_in_dollars, "percentage_change": percentage_change_for_selected_pair}

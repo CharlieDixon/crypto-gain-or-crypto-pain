@@ -8,6 +8,9 @@
         $("#try_your_luck").click(function() {
             $("#trade-form").modal();
         })
+        function openModal() {
+               $("#trade-form").modal({fadeDuration: 250});
+           };  
         $("#submit_trade").click(function() {
             var coin_to_buy = $("#coin_to_buy").val();
             var coin_to_sell = $("#coin_to_sell").val();
@@ -39,12 +42,14 @@
                     $( "#photo-result" ).attr( "src", "/static/skulldollar.svg" );
                     $( "#dollar-result" ).text( "You lost $" + positive_num + ", taking your starting total from $" + before_dollar + " down to $" + user_dollar)
                     }
-
             });
-            $("#popup").modal();
+            $("#popup").modal({fadeDuration: 250});
+            $("#resubmit").click(function() {
+                openModal()});
+            $("#close-modal").click(function() {
+                $.modal.close();
+            })
         })
-        
-        
     })
 </script>
 <script src="static/sortable.min.js"></script>
@@ -149,10 +154,10 @@
           </div>
         </div>
         <div class="actions">
-          <div class="ui black deny button">
+          <div id="close-modal" class="ui black deny button">
             Nope
           </div>
-          <div class="ui positive right labeled icon button">
+          <div id="resubmit" class="ui positive right labeled icon button">
             Sure...
             <i class="checkmark icon"></i>
           </div>

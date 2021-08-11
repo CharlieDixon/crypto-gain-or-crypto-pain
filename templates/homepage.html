@@ -7,7 +7,7 @@
     $( document ).ready(function() {
         $("#try_your_luck").click(function() {
             $("#trade-form").modal();
-        })
+        });
         function openModal() {
                $("#trade-form").modal({fadeDuration: 250});
            }; 
@@ -52,16 +52,11 @@
             TradeSubmit(dataObject)
             setTimeout(() => {TradeGet()}, 250);
             $.modal.close();
-            
-
             $("#popup").modal({fadeDuration: 250});
             $("#resubmit").click(function() {
                 openModal()});
-            $("#close-modal").click(function() {
-                $.modal.close();
             })
         })
-    })
 </script>
 <script src="static/sortable.min.js"></script>
 <link rel="stylesheet" href="static/sortable.min.css">
@@ -147,7 +142,9 @@
     <p><label>Coin to sell: </label><input type="text" id="coin_to_sell"></p>
     <p><label>Amount to sell: </label><input type="text" id="amount"></p>
     <p>
-        <input type="submit" value="Nope" class="ui black deny button">
+        <a href="close-modal" rel="modal:close">
+        <input type="submit" value="Nope" class="ui black deny button" style="margin-right:20px">
+        </a>
         <input type="submit" value="Submit trade" class="ui positive right labeled icon button" id="submit_trade">
     </p>
     </div>
@@ -165,16 +162,18 @@
           </div>
         </div>
         <div class="actions">
-          <div id="close-modal" class="ui black deny button">
+        <a href="close-modal" rel="modal:close">
+          <div class="ui black deny button">
             Nope
           </div>
+          </a>
           <div id="resubmit" class="ui positive right labeled icon button">
             Sure...
             <i class="checkmark icon"></i>
           </div>
         </div>
       </div>
-      
+
   <script>
     function filterTable() {
       // Declare variables

@@ -133,13 +133,13 @@ def fetch_crypto_data(id: int, user_amount: float, symbol: str):
             if coin["symbol"] == row._mapping["quote_asset"].lower()
         ][0].values()
         value_of_coin_in_dollars = convert_to_dollars(gecko_id)
+
     before_trade_in_dollars = before_trade * value_of_coin_in_dollars
     after_trade_in_dollars = after_trade * value_of_coin_in_dollars
     gain_or_pain_in_dollars = after_trade_in_dollars - before_trade_in_dollars
     trade.before_trade_in_dollars = before_trade_in_dollars
     trade.gain_or_pain_in_dollars = gain_or_pain_in_dollars
     trade.percentage_change_for_selected_pair = percentage_change_for_selected_pair
-
     db.add(trade)
     db.commit()
 
@@ -218,6 +218,9 @@ def home(request: Request, db: Session = Depends(get_db)):
         trades[-1].percentage_change_for_selected_pair,
         trades[-1].before_trade_in_dollars,
     )
+    print(base_asset, quote_asset, user_amount)
+    print(gain_or_pain_in_dollars)
+    print(before_trade_in_dollars)
     total_user_dollars = float(before_trade_in_dollars) + float(gain_or_pain_in_dollars)
     before_dollars = float(before_trade_in_dollars)
     return {"total_user_dollars": total_user_dollars, "before_dollars": before_dollars, "gain_or_pain_in_dollars": gain_or_pain_in_dollars, "percentage_change": percentage_change_for_selected_pair}

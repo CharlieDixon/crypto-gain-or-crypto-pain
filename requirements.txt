@@ -5,3 +5,4 @@ python-binance
 Jinja2
 httpx
 forex-python
+aiofiles

@@ -16,6 +16,7 @@ import uuid
 import httpx
 from resources.currency_info import currency_codes, coin_list
 from forex_python.converter import CurrencyRates
+from starlette.responses import FileResponse
 
 coin_list = coin_list()
 cfg = configparser.ConfigParser()
@@ -28,6 +29,7 @@ templates = Jinja2Templates(directory="templates")
 app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -144,6 +146,11 @@ def fetch_crypto_data(id: int, user_amount: float, symbol: str):
     db.commit()
 
 
+@app.get("/favicon.ico")
+async def get_favicon():
+    return FileResponse("static/favicon.ico")
+
+
 @app.get("/")
 def home(
     request: Request, search=None, gain=None, pain=None, db: Session = Depends(get_db)
@@ -223,4 +230,9 @@ def home(request: Request, db: Session = Depends(get_db)):
     print(before_trade_in_dollars)
     total_user_dollars = float(before_trade_in_dollars) + float(gain_or_pain_in_dollars)
     before_dollars = float(before_trade_in_dollars)
-    return {"total_user_dollars": total_user_dollars, "before_dollars": before_dollars, "gain_or_pain_in_dollars": gain_or_pain_in_dollars, "percentage_change": percentage_change_for_selected_pair}
+    return {
+        "total_user_dollars": total_user_dollars,
+        "before_dollars": before_dollars,
+        "gain_or_pain_in_dollars": gain_or_pain_in_dollars,
+        "percentage_change": percentage_change_for_selected_pair,
+    }

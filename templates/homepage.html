@@ -7,7 +7,7 @@
     $( document ).ready(function() {
         $("#try_your_luck").click(function() {
             $("#trade-form").modal();
-        })
+        });
         function openModal() {
                $("#trade-form").modal({fadeDuration: 250});
            }; 
@@ -52,16 +52,11 @@
             TradeSubmit(dataObject)
             setTimeout(() => {TradeGet()}, 250);
             $.modal.close();
-            
-
             $("#popup").modal({fadeDuration: 250});
             $("#resubmit").click(function() {
                 openModal()});
-            $("#close-modal").click(function() {
-                $.modal.close();
             })
         })
-    })
 </script>
 <script src="static/sortable.min.js"></script>
 <link rel="stylesheet" href="static/sortable.min.css">
@@ -147,7 +142,9 @@
     <p><label>Coin to sell: </label><input type="text" id="coin_to_sell"></p>
     <p><label>Amount to sell: </label><input type="text" id="amount"></p>
     <p>
-        <input type="submit" value="Nope" class="ui black deny button">
+        <a href="close-modal" rel="modal:close">
+        <input type="submit" value="Nope" class="ui black deny button" style="margin-right:20px">
+        </a>
         <input type="submit" value="Submit trade" class="ui positive right labeled icon button" id="submit_trade">
     </p>
     </div>
@@ -155,26 +152,27 @@
     <div id="popup" class="modal" style="vertical-align: middle;">
         <div class="image content">
           <div class="ui medium image">
-            <!-- <img src="https://cdn.pixabay.com/photo/2019/08/20/13/56/money-4418858_1280.jpg"> -->
             <img id=photo-result>
           </div>
           <div class="description">
-            <div id="win-or-lose" class="ui header"></div>
-            <p id="dollar-result"></p>
-            <p>Try again?</p>
+            <div id="win-or-lose" class="ui header" style="margin-top:5px"></div>
+            <p id="dollar-result" style="margin-top: 15px; font-size: 16px;"></p>
+            <p style="margin-bottom:15px; font-size:18px">Try again?</p>
           </div>
         </div>
         <div class="actions">
-          <div id="close-modal" class="ui black deny button">
+        <a href="close-modal" rel="modal:close">
+          <div class="ui black deny button">
             Nope
           </div>
+          </a>
           <div id="resubmit" class="ui positive right labeled icon button">
             Sure...
             <i class="checkmark icon"></i>
           </div>
         </div>
       </div>
-      
+
   <script>
     function filterTable() {
       // Declare variables

@@ -51,6 +51,9 @@
                 });
             TradeSubmit(dataObject)
             setTimeout(() => {TradeGet()}, 250);
+            $( "#coin_to_buy" ).val( "" );
+            $( "#coin_to_sell" ).val( "" );
+            $( "#amount" ).val( "" );
             $.modal.close();
             $("#popup").modal({fadeDuration: 250});
             $("#resubmit").click(function() {

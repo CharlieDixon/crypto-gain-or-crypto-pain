@@ -13,7 +13,6 @@
            }; 
         function TradeSubmit(dataObject){
             // returns a promise that can be used later. 
-            console.log(dataObject);
             return $.ajax({
                 url: "/gain-or-pain",
                 type: "POST",
@@ -24,12 +23,12 @@
             }
         function TradeGet(){
             return $.get( "/trade-db", function( data ) {
+                console.log(data);
                 $( ".result" ).html( data );
                 $( "#dollar-result" ).data( "dollars", {WorL: data['gain_or_pain_in_dollars'], total_dollar: data['total_user_dollars'], before_dollars: data["before_dollars"]});
                 var positive_num = Math.abs($( "#dollar-result" ).data( "dollars" ).WorL.toFixed(2));
                 var user_dollar = $( "#dollar-result" ).data( "dollars" ).total_dollar.toFixed(2);
                 var before_dollar = $( "#dollar-result" ).data( "dollars" ).before_dollars.toFixed(2);
-                console.log(positive_num, user_dollar, before_dollar);
                 if (data['gain_or_pain_in_dollars'] > 0) { $( "#win-or-lose" ).text( "Great success!");
                 $( "#photo-result" ).attr( "src", "/static/moneybag.svg" );
                  $( "#dollar-result" ).text( "You gained $" + positive_num + ", bringing your starting total from $" + before_dollar + " to $" + user_dollar + "!") }
@@ -146,7 +145,7 @@
     <p><label>Amount to sell: </label><input type="text" id="amount"></p>
     <p>
         <a href="close-modal" rel="modal:close">
-        <input type="submit" value="Nope" class="ui black deny button" style="margin-right:20px">
+        <input type="submit" value="Nope" class="ui black deny button" style="margin-right:20px" onclick="myFunction()">
         </a>
         <input type="submit" value="Submit trade" class="ui positive right labeled icon button" id="submit_trade">
     </p>

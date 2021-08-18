@@ -17,6 +17,7 @@ import httpx
 from resources.currency_info import currency_codes, coin_list
 from forex_python.converter import CurrencyRates
 from starlette.responses import FileResponse
+from collections import defaultdict
 
 coin_list = coin_list()
 cfg = configparser.ConfigParser()
@@ -39,6 +40,9 @@ class TradeRequest(BaseModel):
     quote_asset: str
     user_amount: float
 
+class DropdownRequest(BaseModel):
+    coin: str
+
 
 def get_db():
     """Creates local database session - necessary for all API calls that require reading/writing to database"""
@@ -56,6 +60,7 @@ def get_base_and_quote_assets():
         assets[pair["symbol"]] = pair["baseAsset"], pair["quoteAsset"]
     return assets
 
+assets = get_base_and_quote_assets()
 
 def convert_to_dollars(gecko_id):
     """Uses gecko_id to get current price of a given coin (quote asset) in dollars from coingecko's public API and returns it"""
@@ -65,11 +70,10 @@ def convert_to_dollars(gecko_id):
     return dollars
 
 
-def get_all_coins():
+def get_all_coins(assets):
     """At initiation of API fetches information on all trading pairs and adds to database."""
     db = SessionLocal()
     pair_tickers = client.get_ticker()
-    assets = get_base_and_quote_assets()
 
     for pair in pair_tickers:
         exists = (
@@ -92,7 +96,7 @@ def get_all_coins():
     db.commit()
 
 
-get_all_coins()
+get_all_coins(assets)
 
 
 def select_trade_row(symbol: str):
@@ -207,7 +211,7 @@ async def user_gain_or_pain(
 
 
 @app.get("/trade-db")
-def home(request: Request, db: Session = Depends(get_db)):
+def trade_db(request: Request, db: Session = Depends(get_db)):
     trades = db.query(Trades).all()
     # gets last db entry i.e. last trade submitted: change to use IDs
     (
@@ -233,3 +237,15 @@ def home(request: Request, db: Session = Depends(get_db)):
         "gain_or_pain_in_dollars": gain_or_pain_in_dollars,
         "percentage_change": percentage_change_for_selected_pair,
     }
+
+@app.post("/limit-dropdown")
+def limit_dropdown_menu_options(coin: DropdownRequest):
+    # will need to be placed in separate functions too much going on here
+    first_dropdown = set()
+    coin_dict = defaultdict(list)
+    coin = coin.coin
+    for base, quote in assets.values():
+        first_dropdown.add(base)
+        coin_dict[base].append(quote)
+    breakpoint()
+    return coin_dict[coin]

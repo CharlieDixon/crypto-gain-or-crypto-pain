@@ -8,6 +8,19 @@
         $("#try_your_luck").click(function() {
             $("#trade-form").modal();
         });
+        $("#c2b").on('change', function(){
+            var dropdownOptions = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "/limit-dropdown",
+                data: JSON.stringify({
+                    'coin': dropdownOptions}),
+                success: console.log(dropdownOptions),
+                contentType: "application/json",
+                datatype: "json"
+                });
+            });
+            //     $("#amount").text(data)
         $('.ui.form')
             .form({
                 fields: {
@@ -139,71 +152,6 @@
     </div>
 </button>
 
-<form class="ui form">
-      <h3>Try your luck!</h3>
-      <div class="field"><p><label>Coin to buy: </label><input placeholder="e.g. ETH" name="username" type="text" ></p></div>
-      <div class="field"><p><label>Coin to sell: </label><input placeholder="e.g. BTC" name="password" type="text" ></p></div>
-      <div class="field"><p><label>Amount to sell: </label><input placeholder="e.g. 3" name="name" type="text" ></p></div>
-      <p>
-          <a href="close-modal" rel="modal:close">
-          <input type="submit" value="Nope" class="ui black deny button" style="margin-right:20px">
-          </a>
-          <input type="submit" value="Submit trade" class="ui positive right labeled icon button" id="submit_trade">
-      </p>
-      <div class="ui primary submit button">Submit</div>
-      <div class="ui error message"></div>
-  </form>
-
-<!-- <div class="ui horizontal divider">or</div>
-<form class="ui form segment">
-  <p>Tell Us About Yourself</p>
-  <div class="two fields">
-    <div class="field">
-      <label>Name</label>
-      <input placeholder="First Name" name="name" type="text">
-    </div>
-    <div class="field">
-      <label>Gender</label>
-      <select class="ui dropdown" name="gender">
-        <option value="">Gender</option>
-        <option value="male">Male</option>
-        <option value="female">Female</option>
-      </select>
-    </div>
-  </div>
-  <div class="two fields">
-    <div class="field">
-      <label>Username</label>
-      <input placeholder="Username" name="username" type="text">
-    </div>
-    <div class="field">
-      <label>Password</label>
-      <input type="password" name="password">
-    </div>
-  </div>
-  <div class="field">
-    <label>Skills</label>
-    <select name="skills" multiple="" class="ui dropdown">
-      <option value="">Select Skills</option>
-      <option value="css">CSS</option>
-      <option value="html">HTML</option>
-      <option value="javascript">Javascript</option>
-      <option value="design">Graphic Design</option>
-      <option value="plumbing">Plumbing</option>
-      <option value="mech">Mechanical Engineering</option>
-      <option value="repair">Kitchen Repair</option>
-    </select>
-  </div>
-  <div class="inline field">
-    <div class="ui checkbox">
-      <input type="checkbox" name="terms">
-      <label>I agree to the terms and conditions</label>
-    </div>
-  </div>
-  <div class="ui primary submit button">Submit</div>
-  <div class="ui error message"></div>
-</form> -->
-
 <table class="ui celled table sorter" id="cryptoTable">
     <thead>
       <tr>
@@ -242,8 +190,21 @@
 <form class="ui form">
 
     <h3>Try your luck!</h3>
-    <div class="field"><p><label>Coin to buy: </label><input placeholder="e.g. ETH" name="c2b" type="text" id="coin_to_buy"></p></div>
-    <div class="field"><p><label>Coin to sell: </label><input placeholder="e.g. BTC" name="c2s" type="text" id="coin_to_sell"></p></div>
+    <div class="field">
+        <label>Coin to buy: </label>
+        <select name="c2b" id="c2b">
+            <option value="">Select coin to buy</option>
+            <option>BTC</option>
+        </select>
+    </div>
+    <div class="field">
+        <label>Coin to sell: </label>
+        <select name="c2s" id="c2s">
+            <option value="">Select coin to sell</option>
+        </select>
+    </div>
+    <!-- <div class="field"><p><label>Coin to buy: </label><input placeholder="e.g. ETH" name="c2b" type="text" id="coin_to_buy"></p></div> -->
+    <!-- <div class="field"><p><label>Coin to sell: </label><input placeholder="e.g. BTC" name="c2s" type="text" id="coin_to_sell"></p></div> -->
     <div class="field"><p><label>Amount to sell: </label><input placeholder="e.g. 3" name="a2s" type="text" id="amount"></p></div>
     <p>
         <a href="close-modal" rel="modal:close">

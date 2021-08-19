@@ -100,17 +100,16 @@
             });
         }
         $("#submit_trade").click(function() {
-            var coin_to_buy = $("#coin_to_buy").val();
-            var coin_to_sell = $("#coin_to_sell").val();
+            var coin_to_buy = $("#c2b").val();
+            var coin_to_sell = $("#c2s").val();
             var amount = $("#amount").val();
             var dataObject = JSON.stringify({
                     'base_asset': coin_to_buy,
                     'quote_asset': coin_to_sell,
                     'user_amount': amount,
                 });
-                TradeSubmit(dataObject);
-            // TradeSubmit(dataObject)
-            // setTimeout(() => {TradeGet()}, 250);
+            TradeSubmit(dataObject)
+            setTimeout(() => {TradeGet()}, 250);
             $( "#coin_to_buy" ).val( "" );
             $( "#coin_to_sell" ).val( "" );
             $( "#amount" ).val( "" );
@@ -214,7 +213,7 @@
     </div>
     <div class="field">
         <label>Coin to sell: </label>
-        <select name="c2s" id="c2s">
+        <select name="c2s" id="c2s" class="ui search dropdown">
             <option value="">Select coin to sell</option>
         </select>
     </div>

@@ -5,14 +5,11 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
 <script>
     $( document ).ready(function() {
-        $('.ui.search.dropdown')
-  .dropdown()
-;
+        $('.ui.search.dropdown').dropdown();
         $("#try_your_luck").click(function() {
             $("#trade-form").modal();
         });
         $("#c2b").on('change', function(){
-            // todo: add conditional to ignore select blank option
             $("#c2s > option").slice(1).remove();
             var conceptName = $('#c2b').find(":selected").text();
             $.ajax({
@@ -66,8 +63,7 @@
                     ]
                 },
                 }
-            })
-            ;
+            });
         function openModal() {
                $("#trade-form").modal({fadeDuration: 250});
            }; 
@@ -108,13 +104,14 @@
                     'quote_asset': coin_to_sell,
                     'user_amount': amount,
                 });
+            // added timeout as hacky workaround - need to error handle.
             TradeSubmit(dataObject)
-            setTimeout(() => {TradeGet()}, 250);
+            setTimeout(() => {TradeGet()}, 500);
             $( "#coin_to_buy" ).val( "" );
             $( "#coin_to_sell" ).val( "" );
             $( "#amount" ).val( "" );
             $.modal.close();
-            $("#popup").modal({fadeDuration: 250});
+            $("#popup").modal({fadeDuration: 150});
             $("#resubmit").click(function() {
                 openModal()});
             })
@@ -136,11 +133,11 @@
    left: -9999px !important;
 }
     /* Required field in search box prevents capitalisation of placeholder. */
-    #userInput:valid { text-transform: uppercase;}
+    .search:valid { text-transform: uppercase;}
 </style>
 <form>
 <div class="ui left icon input">
-    <input name="search" type="text" id="userInput" required="required" placeholder="Search..." onkeyup="filterTable()" data-com.bitwarden.browser.user-edited="yes" value={{ search or '' }}>
+    <input name="search" type="text" class="search" id="userInput" required="required" placeholder="Search..." onkeyup="filterTable()" data-com.bitwarden.browser.user-edited="yes" value={{ search or '' }}>
     <i class="search icon"></i>
 </div>
 <div class="ui checkbox">

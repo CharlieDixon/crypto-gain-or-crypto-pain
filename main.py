@@ -52,15 +52,19 @@ def get_db():
     finally:
         db.close()
 
-
 def get_base_and_quote_assets():
+    """Returns a dictionary of assets from binance API and a set containing the base assets"""
     exchange_info = client.get_exchange_info()
     assets = {}
+    set_of_base_coins = set()
     for pair in exchange_info["symbols"]:
         assets[pair["symbol"]] = pair["baseAsset"], pair["quoteAsset"]
-    return assets
+        set_of_base_coins.add(pair["baseAsset"])
+    return assets, set_of_base_coins
 
-assets = get_base_and_quote_assets()
+assets, set_of_base_coins = get_base_and_quote_assets()
+
+breakpoint()
 
 def convert_to_dollars(gecko_id):
     """Uses gecko_id to get current price of a given coin (quote asset) in dollars from coingecko's public API and returns it"""

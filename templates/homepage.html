@@ -10,12 +10,12 @@
         });
         $("#c2b").on('change', function(){
             // todo: add conditional to ignore select blank option
-            var dropdownOptions = $(this).val();
+            var conceptName = $('#c2b').find(":selected").text();
             $.ajax({
                 url: "/limit-dropdown",
                 type: "GET",
                 data: {
-                c2b: dropdownOptions,
+                c2b: conceptName,
                 },
                 success: function(response) {
                 console.log(response);

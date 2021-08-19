@@ -5,6 +5,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
 <script>
     $( document ).ready(function() {
+        $('.ui.search.dropdown')
+  .dropdown()
+;
         $("#try_your_luck").click(function() {
             $("#trade-form").modal();
         });
@@ -32,7 +35,6 @@
                 }
                 });
             });
-            //     $("#amount").text(data)
         $('.ui.form')
             .form({
                 fields: {
@@ -197,14 +199,13 @@
     </tbody>
   </table>
 
-
+  
   <div id="trade-form" class="window modal">
 <form class="ui form">
-
     <h3>Try your luck!</h3>
     <div class="field">
         <label>Coin to buy: </label>
-        <select name="c2b" id="c2b">
+        <select name="c2b" id="c2b" class="ui search dropdown">
             <option value="">Select coin to buy</option>
             {% for coin in set_of_base_coins %}
             <option>{{coin}}</option>
@@ -217,8 +218,6 @@
             <option value="">Select coin to sell</option>
         </select>
     </div>
-    <!-- <div class="field"><p><label>Coin to buy: </label><input placeholder="e.g. ETH" name="c2b" type="text" id="coin_to_buy"></p></div> -->
-    <!-- <div class="field"><p><label>Coin to sell: </label><input placeholder="e.g. BTC" name="c2s" type="text" id="coin_to_sell"></p></div> -->
     <div class="field"><p><label>Amount to sell: </label><input placeholder="e.g. 3" name="a2s" type="text" id="amount"></p></div>
     <p>
         <a href="close-modal" rel="modal:close">

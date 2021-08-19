@@ -205,7 +205,9 @@
         <label>Coin to buy: </label>
         <select name="c2b" id="c2b">
             <option value="">Select coin to buy</option>
-            <option>BTC</option>
+            {% for coin in set_of_base_coins %}
+            <option>{{coin}}</option>
+            {% endfor %}
         </select>
     </div>
     <div class="field">

@@ -189,6 +189,7 @@ def home(
             "search": search,
             "gain": gain,
             "pain": pain,
+            "set_of_base_coins": sorted(set_of_base_coins),
         },
     )
 

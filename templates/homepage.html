@@ -10,6 +10,7 @@
         });
         $("#c2b").on('change', function(){
             // todo: add conditional to ignore select blank option
+            $("#c2s > option").slice(1).remove();
             var conceptName = $('#c2b').find(":selected").text();
             $.ajax({
                 url: "/limit-dropdown",

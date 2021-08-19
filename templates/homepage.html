@@ -9,15 +9,26 @@
             $("#trade-form").modal();
         });
         $("#c2b").on('change', function(){
+            // todo: add conditional to ignore select blank option
             var dropdownOptions = $(this).val();
             $.ajax({
-                type: "POST",
                 url: "/limit-dropdown",
-                data: JSON.stringify({
-                    'coin': dropdownOptions}),
-                success: console.log(dropdownOptions),
-                contentType: "application/json",
-                datatype: "json"
+                type: "GET",
+                data: {
+                c2b: dropdownOptions,
+                },
+                success: function(response) {
+                console.log(response);
+                var dropMenu = document.getElementById('c2s');
+                for (val of response) {
+                    var option = document.createElement("option");
+                    option.value = val;
+                    option.text = val;
+                    dropMenu.appendChild(option);
+                }},
+                error: function(xhr) {
+                console.log(xhr.responseText)
+                }
                 });
             });
             //     $("#amount").text(data)
@@ -47,7 +58,7 @@
                     rules: [
                     {
                         type   : 'empty',
-                        prompt : 'Please enter a number'
+                        prompt : 'Please enter the amount you would like to sell'
                     }
                     ]
                 },

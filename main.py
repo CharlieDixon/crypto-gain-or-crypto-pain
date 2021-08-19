@@ -40,6 +40,7 @@ class TradeRequest(BaseModel):
     quote_asset: str
     user_amount: float
 
+
 class DropdownRequest(BaseModel):
     coin: str
 
@@ -52,6 +53,7 @@ def get_db():
     finally:
         db.close()
 
+
 def get_base_and_quote_assets():
     """Returns a dictionary of assets from binance API and a set containing the base assets"""
     exchange_info = client.get_exchange_info()
@@ -62,9 +64,9 @@ def get_base_and_quote_assets():
         set_of_base_coins.add(pair["baseAsset"])
     return assets, set_of_base_coins
 
+
 assets, set_of_base_coins = get_base_and_quote_assets()
 
-breakpoint()
 
 def convert_to_dollars(gecko_id):
     """Uses gecko_id to get current price of a given coin (quote asset) in dollars from coingecko's public API and returns it"""
@@ -242,14 +244,13 @@ def trade_db(request: Request, db: Session = Depends(get_db)):
         "percentage_change": percentage_change_for_selected_pair,
     }
 
-@app.post("/limit-dropdown")
-def limit_dropdown_menu_options(coin: DropdownRequest):
-    # will need to be placed in separate functions too much going on here
-    first_dropdown = set()
+
+@app.get("/limit-dropdown")
+def limit_dropdown(
+    c2b=None,
+):
     coin_dict = defaultdict(list)
-    coin = coin.coin
     for base, quote in assets.values():
-        first_dropdown.add(base)
         coin_dict[base].append(quote)
-    breakpoint()
-    return coin_dict[coin]
+    if c2b:
+        return coin_dict.get(c2b)

@@ -4,13 +4,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
 <script>
+function myFunction(elem) { 
+    alert(elem.parentNode.className);
+        };</script>
+<script>
     $( document ).ready(function() {
         $('.ui.search.dropdown').dropdown();
-        function testFunc() {
-            var x = document.getElementById("trade-form-form").getAttribute("class"); 
-            console.log(x)
-            };
-        testFunc();
+        $("#testsub").on("click",function(e){
+                console.log(e);
+            });
         $("#try_your_luck").click(function() {
             $("#trade-form").modal();
         });
@@ -225,7 +227,7 @@
         <input type="submit" value="Nope" class="ui black deny button" style="margin-right:20px">
         </a>
         <input type="submit" value="Submit trade" class="ui positive right labeled icon submit button" id="submit_trade">
-        <input type="submit" value="Submit trade" class="ui positive right labeled icon button">
+        <input id="testsub" type="submit" value="Submit trade" class="ui positive right labeled icon button">
     </p>
     <div class="ui primary submit button">Submit</div>
     <div class="ui error message"></div>

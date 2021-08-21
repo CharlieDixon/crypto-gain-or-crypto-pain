@@ -6,6 +6,11 @@
 <script>
     $( document ).ready(function() {
         $('.ui.search.dropdown').dropdown();
+        function testFunc() {
+            var x = document.getElementById("trade-form-form").getAttribute("class"); 
+            console.log(x)
+            };
+        testFunc();
         $("#try_your_luck").click(function() {
             $("#trade-form").modal();
         });
@@ -94,7 +99,7 @@
                     $( "#dollar-result" ).text( "You lost $" + positive_num + ", taking your starting total from $" + before_dollar + " down to $" + user_dollar)
                     }
             });
-        }
+        };
         $("#submit_trade").click(function() {
             var coin_to_buy = $("#c2b").val();
             var coin_to_sell = $("#c2s").val();
@@ -197,7 +202,7 @@
 
   
   <div id="trade-form" class="window modal">
-<form class="ui form">
+<form class="ui form" id="trade-form-form">
     <h3>Try your luck!</h3>
     <div class="field">
         <label>Coin to buy: </label>
@@ -219,7 +224,8 @@
         <a href="close-modal" rel="modal:close">
         <input type="submit" value="Nope" class="ui black deny button" style="margin-right:20px">
         </a>
-        <input type="submit" value="Submit trade" class="ui positive right labeled icon button" id="submit_trade">
+        <input type="submit" value="Submit trade" class="ui positive right labeled icon submit button" id="submit_trade">
+        <input type="submit" value="Submit trade" class="ui positive right labeled icon button">
     </p>
     <div class="ui primary submit button">Submit</div>
     <div class="ui error message"></div>

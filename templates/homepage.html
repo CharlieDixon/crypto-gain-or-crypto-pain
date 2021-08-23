@@ -2,17 +2,10 @@
 
 {% block content %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
-<script>
-function myFunction(elem) { 
-    alert(elem.parentNode.className);
-        };</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css"/>
 <script>
     $( document ).ready(function() {
         $('.ui.search.dropdown').dropdown();
-        $("#testsub").on("click",function(e){
-                console.log(e);
-            });
         $("#try_your_luck").click(function() {
             $("#trade-form").modal();
         });
@@ -68,9 +61,12 @@ function myFunction(elem) {
                         prompt : 'Please enter the amount you would like to sell'
                     }
                     ]
-                },
                 }
-            });
+            },  
+                  on: 'blur',
+                  inline: true,
+
+                });
         function openModal() {
                $("#trade-form").modal({fadeDuration: 250});
            }; 
@@ -85,6 +81,7 @@ function myFunction(elem) {
             });
             }
         function TradeGet(){
+            console.log('made to get');
             return $.get( "/trade-db", function( data ) {
                 console.log(data);
                 $( ".result" ).html( data );
@@ -102,7 +99,44 @@ function myFunction(elem) {
                     }
             });
         };
-        $("#submit_trade").click(function() {
+    function functABC() {
+        return new Promise(function(resolve, reject) {
+            var dataObject = JSON.stringify({
+                    'base_asset': 'ETH',
+                    'quote_asset': 'BTC',
+                    'user_amount': '2',
+                });            
+                $.ajax({
+                url: "/gain-or-pain",
+                type: "POST",
+                contentType: "application/json",
+                data: dataObject,
+                datatype: "json",
+                success: function(data) {
+                    console.log('success');
+                    resolve(data) // Resolve promise and go to then()
+                },
+                error: function(err) {
+                    console.log('reject');
+                    console.log(dataObject);
+                    console.log(err)
+                    reject(err) // Reject the promise and go to catch()
+                }
+                });
+            });
+            };
+    functABC().then(function(data) {
+        // Run this when your request was successful
+        console.log('success')
+        TradeGet();
+        }).catch(function(err) {
+        // Run this when promise was rejected via reject()
+        console.log('failure')
+        console.log(err.body);
+        console.log(err.json);
+        console.log(data)
+        });
+    $("#submit_trade").click(function() {
             var coin_to_buy = $("#c2b").val();
             var coin_to_sell = $("#c2s").val();
             var amount = $("#amount").val();

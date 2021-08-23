@@ -71,7 +71,7 @@ assets, set_of_base_coins = get_base_and_quote_assets()
 def convert_to_dollars(gecko_id):
     """Uses gecko_id to get current price of a given coin (quote asset) in dollars from coingecko's public API and returns it"""
     params = {"ids": f"{gecko_id}", "vs_currencies": "usd"}
-    response = httpx.get("https://api.coingecko.com/api/v3/simple/price", params=params)
+    response = httpx.get("https://api.coingecko.com/api/v3/simple/price", params=params, timeout=None)
     dollars = response.json()[f"{gecko_id}"]["usd"]
     return dollars
 
@@ -221,28 +221,14 @@ async def user_gain_or_pain(
 def trade_db(request: Request, db: Session = Depends(get_db)):
     trades = db.query(Trades).all()
     # gets last db entry i.e. last trade submitted: change to use IDs
-    (
-        base_asset,
-        quote_asset,
-        user_amount,
-        gain_or_pain_in_dollars,
-        percentage_change_for_selected_pair,
-        before_trade_in_dollars,
-    ) = (
-        trades[-1].base_asset,
-        trades[-1].quote_asset,
-        trades[-1].user_amount,
-        trades[-1].gain_or_pain_in_dollars,
-        trades[-1].percentage_change_for_selected_pair,
-        trades[-1].before_trade_in_dollars,
-    )
-    total_user_dollars = float(before_trade_in_dollars) + float(gain_or_pain_in_dollars)
-    before_dollars = float(before_trade_in_dollars)
+    last_trade = db.execute("SELECT * FROM trades ORDER BY id DESC LIMIT 1;").fetchone()
+    total_user_dollars = float(last_trade.before_trade_in_dollars) + float(last_trade.gain_or_pain_in_dollars)
+    before_dollars = float(last_trade.before_trade_in_dollars)
     return {
         "total_user_dollars": total_user_dollars,
         "before_dollars": before_dollars,
-        "gain_or_pain_in_dollars": gain_or_pain_in_dollars,
-        "percentage_change": percentage_change_for_selected_pair,
+        "gain_or_pain_in_dollars": last_trade.gain_or_pain_in_dollars,
+        "percentage_change": last_trade.percentage_change_for_selected_pair,
     }
 
 

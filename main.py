@@ -195,9 +195,8 @@ def home(
 
 
 @app.post("/gain-or-pain")
-async def user_gain_or_pain(
+def user_gain_or_pain(
     trade_request: TradeRequest,
-    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
 ):
     """Adds a user-defined cryptocurrency to "trades" database and runs background task to find relevant info on success of trade."""
@@ -210,18 +209,18 @@ async def user_gain_or_pain(
     db.add(trade)
     db.commit()
 
-    background_tasks.add_task(
-        fetch_crypto_data, trade.id, trade.user_amount, trade.symbol
-    )
-
+    fetch_crypto_data(trade.id, trade.user_amount, trade.symbol)
+    # background_tasks.add_task(
+    #     fetch_crypto_data, trade.id, trade.user_amount, trade.symbol
+    # )
     return {f"{trade.symbol}": "Submitted"}
 
 
 @app.get("/trade-db")
 def trade_db(request: Request, db: Session = Depends(get_db)):
-    trades = db.query(Trades).all()
     # gets last db entry i.e. last trade submitted: change to use IDs
     last_trade = db.execute("SELECT * FROM trades ORDER BY id DESC LIMIT 1;").fetchone()
+    print(last_trade)
     total_user_dollars = float(last_trade.before_trade_in_dollars) + float(last_trade.gain_or_pain_in_dollars)
     before_dollars = float(last_trade.before_trade_in_dollars)
     return {

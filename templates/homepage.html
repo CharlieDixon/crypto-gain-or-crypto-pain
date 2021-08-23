@@ -63,9 +63,22 @@
                     ]
                 }
             },  
-                  on: 'blur',
-                  inline: true,
-
+                on: 'blur',
+                inline: true,
+                onSuccess: function(event) {
+                var coin_to_buy = $("#c2b").val();
+                var coin_to_sell = $("#c2s").val();
+                var amount = $("#amount").val();
+                var dataObject = JSON.stringify({
+                        'base_asset': coin_to_buy,
+                        'quote_asset': coin_to_sell,
+                        'user_amount': amount,
+                });
+                $( "#c2b" ).val( "" );
+                $( "#c2s" ).val( "" );
+                $( "#amount" ).val( "" );
+                TradeSubmit(dataObject);
+            },
                 });
         function openModal() {
                $("#trade-form").modal({fadeDuration: 250});
@@ -77,14 +90,12 @@
                 type: "POST",
                 contentType: "application/json",
                 data: dataObject,
-                datatype: "json"
+                datatype: "json",
+                success: TradeGet()
             });
             }
         function TradeGet(){
-            console.log('made to get');
             return $.get( "/trade-db", function( data ) {
-                console.log(data);
-                $( ".result" ).html( data );
                 $( "#dollar-result" ).data( "dollars", {WorL: data['gain_or_pain_in_dollars'], total_dollar: data['total_user_dollars'], before_dollars: data["before_dollars"]});
                 var positive_num = Math.abs($( "#dollar-result" ).data( "dollars" ).WorL.toFixed(2));
                 var user_dollar = $( "#dollar-result" ).data( "dollars" ).total_dollar.toFixed(2);
@@ -99,43 +110,6 @@
                     }
             });
         };
-    function functABC() {
-        return new Promise(function(resolve, reject) {
-            var dataObject = JSON.stringify({
-                    'base_asset': 'ETH',
-                    'quote_asset': 'BTC',
-                    'user_amount': '2',
-                });            
-                $.ajax({
-                url: "/gain-or-pain",
-                type: "POST",
-                contentType: "application/json",
-                data: dataObject,
-                datatype: "json",
-                success: function(data) {
-                    console.log('success');
-                    resolve(data) // Resolve promise and go to then()
-                },
-                error: function(err) {
-                    console.log('reject');
-                    console.log(dataObject);
-                    console.log(err)
-                    reject(err) // Reject the promise and go to catch()
-                }
-                });
-            });
-            };
-    functABC().then(function(data) {
-        // Run this when your request was successful
-        console.log('success')
-        TradeGet();
-        }).catch(function(err) {
-        // Run this when promise was rejected via reject()
-        console.log('failure')
-        console.log(err.body);
-        console.log(err.json);
-        console.log(data)
-        });
     $("#submit_trade").click(function() {
             var coin_to_buy = $("#c2b").val();
             var coin_to_sell = $("#c2s").val();

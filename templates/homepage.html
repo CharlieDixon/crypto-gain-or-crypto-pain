@@ -3,6 +3,8 @@
 {% block content %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+<link rel="stylesheet" href="static/overridestyle.css" />
+
 <script>
     $(document).ready(function () {
         $('.ui.search.dropdown').dropdown();
@@ -11,12 +13,12 @@
         });
         $("#c2b").on('change', function () {
             $("#c2s > option").slice(1).remove();
-            var conceptName = $('#c2b').find(":selected").text();
+            var cointobuy = $('#c2b').find(":selected").text();
             $.ajax({
                 url: "/limit-dropdown",
                 type: "GET",
                 data: {
-                    c2b: conceptName,
+                    c2b: cointobuy,
                 },
                 success: function (response) {
                     // populate option fields in second dropdown based on available trading pairs

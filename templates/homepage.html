@@ -124,33 +124,6 @@
                 });
             }, 100);
         });
-        // $('#trade-form').on($.modal.AFTER_CLOSE, function(event, modal) {
-        //         console.log(modal);
-        //         $("#popup").modal('show');
-        //         console.log(event.target.firstElementChild)
-        //         console.log(event.target.firstElementChild.form)
-
-        //     });
-        // $("#submit_trade").click(function() {
-        //         var coin_to_buy = $("#c2b").val();
-        //         var coin_to_sell = $("#c2s").val();
-        //         var amount = $("#amount").val();
-        //         var dataObject = JSON.stringify({
-        //                 'base_asset': coin_to_buy,
-        //                 'quote_asset': coin_to_sell,
-        //                 'user_amount': amount,
-        //             });
-        //         // added timeout as hacky workaround - need to error handle.
-        //         TradeSubmit(dataObject)
-        //         setTimeout(() => {TradeGet()}, 500);
-        //         $( "#coin_to_buy" ).val( "" );
-        //         $( "#coin_to_sell" ).val( "" );
-        //         $( "#amount" ).val( "" );
-        //         $.modal.close();
-        //         $("#popup").modal({fadeDuration: 150});
-        //         $("#resubmit").click(function() {
-        //             openModal()});
-        //         })
     })
 </script>
 <script src="static/sortable.min.js"></script>

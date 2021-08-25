@@ -118,11 +118,9 @@
             });
         };
         $("#trade-form").submit(function () {
-            setTimeout(function () {
-                $("#popup").modal({
-                    fadeDuration: 200
-                });
-            }, 100);
+            $("#popup").modal({
+                fadeDuration: 300
+            });
         });
     })
 </script>
@@ -244,11 +242,8 @@
             <a href="close-modal" rel="modal:close">
                 <input type="submit" value="Nope" class="ui black deny button" style="margin-right:20px">
             </a>
-            <input type="submit" value="Submit trade" class="ui positive right labeled icon submit button"
-                id="submit_trade">
-            <input id="testsub" type="submit" value="Submit trade" class="ui positive right labeled icon button">
+            <input type="submit" value="Submit trade" class="ui positive right labeled icon button">
         </p>
-        <div class="ui primary submit button">Submit</div>
         <div class="ui error message"></div>
     </form>
 </div>

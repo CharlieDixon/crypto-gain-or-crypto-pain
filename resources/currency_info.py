@@ -1,9 +1,11 @@
 import httpx
 
-def coin_list():
-    res = httpx.get("https://api.coingecko.com/api/v3/coins/list")
+
+def gecko_coin_list():
+    res = httpx.get("https://api.coingecko.com/api/v3/coins/list", timeout=10)
     coin_list = res.json()
     return coin_list
+
 
 currency_codes = [
     "USD",

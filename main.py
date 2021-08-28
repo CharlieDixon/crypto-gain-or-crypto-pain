@@ -14,12 +14,12 @@ import configparser
 from binance import Client
 import uuid
 import httpx
-from resources.currency_info import currency_codes, coin_list
+from resources.currency_info import currency_codes, gecko_coin_list
 from forex_python.converter import CurrencyRates
 from starlette.responses import FileResponse
 from collections import defaultdict
 
-coin_list = coin_list()
+coin_list = gecko_coin_list()
 cfg = configparser.ConfigParser()
 cfg.read("binance_api_key.cfg")  # access api credentials
 

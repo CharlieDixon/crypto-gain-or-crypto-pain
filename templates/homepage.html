@@ -195,13 +195,29 @@
         <tr {% if crypto.gain==1 %} style="background-color:#fcfff5" {% endif %} {% if crypto.pain==1 %}
             style="background-color:#fef5f6" {% endif %}>
             <td>{{crypto.symbol}}</td>
-            <td>{{crypto.base_asset}}</td>
-            <td>{{crypto.quote_asset}}</td>
+            <td>
+                <div class="crypto-icons">
+                    {% if crypto.base_asset in svg_icons %}
+                    <img src="/static/icons/{{crypto.base_asset}}.svg" width="16" height="16" alt="" />
+                    {% else %} <img src="/static/icons/generic.svg" width="16" height="16" alt="" />
+                    {% endif %}
+                    {{crypto.base_asset}}
+                </div>
+            </td>
+            <td>
+                <div class="crypto-icons">
+                    {% if crypto.quote_asset in svg_icons %}
+                    <img src="/static/icons/{{crypto.quote_asset}}.svg" width="16" height="16" alt="" />
+                    {% else %} <img src="/static/icons/generic.svg" width="16" height="16" alt="" />
+                    {% endif %}
+                    {{crypto.quote_asset}}
+                </div>
+            </td>
             <td>{{crypto.price}}</td>
             <td>{{crypto.change}}</td>
             <td>{{crypto.percentage_change}}</td>
             {% if crypto.gain == 1 %}
-            <td style="text-align: center; vertical-align: middle;">
+            <td style=" text-align: center; vertical-align: middle;">
                 <div class="hide-value">{{crypto.percentage_change}}</div><i class="icon checkmark"
                     style="color:green; visibility: visible"></i>
             </td>

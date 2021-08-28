@@ -14,7 +14,7 @@ import configparser
 from binance import Client
 import uuid
 import httpx
-from resources.currency_info import currency_codes, gecko_coin_list
+from resources.currency_info import currency_codes, gecko_coin_list, svg_icon_codes
 from forex_python.converter import CurrencyRates
 from starlette.responses import FileResponse
 from collections import defaultdict
@@ -192,6 +192,7 @@ def home(
             "gain": gain,
             "pain": pain,
             "set_of_base_coins": sorted(set_of_base_coins),
+            "svg_icons": svg_icon_codes,
         },
     )
 

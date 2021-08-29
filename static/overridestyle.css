@@ -9,3 +9,15 @@
     justify-content: start; 
     gap: 15px
 }
+
+.ui.selection.dropdown .menu>.item:before {
+        content: "";
+        background-image:url(/static/icons/btc.svg);
+        background-size: 100% 100%;
+        display: inline-block;
+        height: 20px;
+        width: 20px;
+        margin-right: 10px;
+        position: relative;
+        top: 4px;
+      }

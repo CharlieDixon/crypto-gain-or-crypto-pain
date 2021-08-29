@@ -8,12 +8,18 @@
 <script>
     $(document).ready(function () {
         $('.ui.search.dropdown').dropdown();
-        $("#try_your_luck").click(function () {
+        function add_icons(excoin) {
+            $("div.item:before").css("background-image", "url(static/icons/" + excoin + ".svg)");
+        };
+        $(" #try_your_luck").click(function () {
             $("#trade-form").modal();
+            // $(".ui.selection.dropdown .menu>.item").css("background-image", "url(static/icons/eth.svg");
         });
         $("#c2b").on('change', function () {
-            $("#c2s > option").slice(1).remove();
-            var cointobuy = $('#c2b').find(":selected").text();
+            $("#c2s> div").slice(1).remove();
+            // var cointobuy = $('#c2b').find(":selected").text();
+            var cointobuy = $(".ui.selection.visible.dropdown>.text:not(.default)").text();
+            console.log(cointobuy)
             $.ajax({
                 url: "/limit-dropdown",
                 type: "GET",
@@ -24,9 +30,11 @@
                     // populate option fields in second dropdown based on available trading pairs
                     var dropMenu = document.getElementById('c2s');
                     for (val of response) {
-                        var option = document.createElement("option");
+                        var option = document.createElement("div");
                         option.value = val;
                         option.text = val;
+                        option.innerHTML = val;
+                        option.className = "item";
                         dropMenu.appendChild(option);
                     }
                 },
@@ -242,29 +250,42 @@
         <h3>Try your luck!</h3>
         <div class="field">
             <label>Coin to buy: </label>
-            <select name="c2b" id="c2b" class="ui search dropdown">
-                <option value="">Select coin to buy</option>
-                {% for coin in set_of_base_coins %}
+            <div class="ui fluid search selection dropdown" name="c2b" id="c2b">
+                <input type="hidden" name="c2b">
+                <i class="dropdown icon"></i>
+                <div class="default text">Select coin to buy</div>
+                <!-- <select name="c2b" id="c2b" class="ui search dropdown"> -->
+                <!-- <option value="">Select coin to buy</option> -->
+                <div class="menu">
+                    {% for coin in set_of_base_coins %}
+                    <div class="item" data-value={{coin}}><img src="/static/icons/btc.svg" />{{coin}}</div>
+                    {% endfor %}
+                </div>
+                <!-- {% for coin in set_of_base_coins %}
                 <option>{{coin}}</option>
                 {% endfor %}
-            </select>
-        </div>
-        <div class="field">
-            <label>Coin to sell: </label>
-            <select name="c2s" id="c2s" class="ui search dropdown">
-                <option value="">Select coin to sell</option>
-            </select>
-        </div>
-        <div class="field">
-            <p><label>Amount to sell: </label><input placeholder="e.g. 3" name="a2s" type="text" id="amount"></p>
-        </div>
-        <p>
-            <a href="close-modal" rel="modal:close">
-                <input type="submit" value="Nope" class="ui black deny button" style="margin-right:20px">
-            </a>
-            <input type="submit" value="Submit trade" class="ui positive right labeled icon button">
-        </p>
-        <div class="ui error message"></div>
+                </select> -->
+            </div>
+            <div class="field">
+                <label>Coin to sell: </label>
+                <div class="ui fluid search selection dropdown" name="c2s">
+                    <input type="hidden" name="c2s">
+                    <i class="dropdown icon"></i>
+                    <div class="default text">Select coin to sell</div>
+                    <div class="menu" id="c2s">
+                    </div>
+                </div>
+                <div class="field">
+                    <p><label>Amount to sell: </label><input placeholder="e.g. 1.7" name="a2s" type="text" id="amount">
+                    </p>
+                </div>
+                <p>
+                    <a href="close-modal" rel="modal:close">
+                        <input type="submit" value="Nope" class="ui black deny button" style="margin-right:20px">
+                    </a>
+                    <input type="submit" value="Submit trade" class="ui positive right labeled icon button">
+                </p>
+                <div class="ui error message"></div>
     </form>
 </div>
 

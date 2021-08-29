@@ -17,9 +17,7 @@
         });
         $("#c2b").on('change', function () {
             $("#c2s> div").slice(1).remove();
-            // var cointobuy = $('#c2b').find(":selected").text();
-            var cointobuy = $(".ui.selection.visible.dropdown>.text:not(.default)").text();
-            console.log(cointobuy)
+            var cointobuy = $("#c2b").dropdown('get value');
             $.ajax({
                 url: "/limit-dropdown",
                 type: "GET",
@@ -27,7 +25,7 @@
                     c2b: cointobuy,
                 },
                 success: function (response) {
-                    // populate option fields in second dropdown based on available trading pairs
+                    // populate fields in second dropdown based on available trading pairs
                     var dropMenu = document.getElementById('c2s');
                     for (val of response) {
                         var option = document.createElement("div");
@@ -254,17 +252,18 @@
                 <input type="hidden" name="c2b">
                 <i class="dropdown icon"></i>
                 <div class="default text">Select coin to buy</div>
-                <!-- <select name="c2b" id="c2b" class="ui search dropdown"> -->
-                <!-- <option value="">Select coin to buy</option> -->
                 <div class="menu">
                     {% for coin in set_of_base_coins %}
-                    <div class="item" data-value={{coin}}><img src="/static/icons/btc.svg" />{{coin}}</div>
+                    <div class="item" data-value={{coin}}>
+                        {% if coin in svg_icons %}
+                        <img src="/static/icons/{{coin}}.svg" width="20px" height="20px" alt="" />
+                        {% else %}
+                        <img src="/static/icons/generic.svg" width="20px" height="20px" alt="" />
+                        {% endif %}
+                        {{coin}}
+                    </div>
                     {% endfor %}
                 </div>
-                <!-- {% for coin in set_of_base_coins %}
-                <option>{{coin}}</option>
-                {% endfor %}
-                </select> -->
             </div>
             <div class="field">
                 <label>Coin to sell: </label>
@@ -276,7 +275,7 @@
                     </div>
                 </div>
                 <div class="field">
-                    <p><label>Amount to sell: </label><input placeholder="e.g. 1.7" name="a2s" type="text" id="amount">
+                    <p><label>Amount to sell: </label><input placeholder="e.g. 2" name="a2s" type="text" id="amount">
                     </p>
                 </div>
                 <p>

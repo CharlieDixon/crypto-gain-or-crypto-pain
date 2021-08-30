@@ -131,9 +131,12 @@ def fetch_crypto_data(id: int, user_amount: float, symbol: str):
 
     percentage_change_for_selected_pair = float(row._mapping["percentage_change"])
     before_trade = float(user_amount)
-    after_trade = before_trade + (
-        float(row._mapping["percentage_change"]) / 100 * before_trade
-    )
+    if float(row._mapping["percentage_change"]) == 0:
+        after_trade = before_trade
+    else:
+        after_trade = before_trade + (
+            float(row._mapping["percentage_change"]) / 100 * before_trade
+        )
     gecko_coin_list = coin_list
     if row._mapping["quote_asset"].upper() in currency_codes:
         exchange = CurrencyRates()

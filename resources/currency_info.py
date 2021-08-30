@@ -162,7 +162,6 @@ svg_icon_codes = [
     "AST",
     "ATM",
     "ATOM",
-    "AUDR",
     "AUTO",
     "AYWA",
     "BAB",

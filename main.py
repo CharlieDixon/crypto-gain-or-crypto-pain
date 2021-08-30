@@ -137,9 +137,12 @@ def fetch_crypto_data(id: int, user_amount: float, symbol: str):
     gecko_coin_list = coin_list
     if row._mapping["quote_asset"].upper() in currency_codes:
         exchange = CurrencyRates()
-        value_of_coin_in_dollars = exchange.get_rate(
-            row._mapping["quote_asset"].upper(), "USD"
-        )
+        try:
+            value_of_coin_in_dollars = exchange.get_rate(
+                row._mapping["quote_asset"].upper(), "USD"
+            )
+        except:
+            value_of_coin_in_dollars = 100
     else:
         gecko_id, symb, name = [
             coin
@@ -216,9 +219,11 @@ def user_gain_or_pain(
 
     db.close()
 
+    return {"success": trade.symbol}
+
 
 @app.get("/trade-db")
-def trade_db(request: Request, db: Session = Depends(get_db)):
+def trade_db(db: Session = Depends(get_db)):
     # gets last db entry i.e. last trade submitted: change to use IDs
     last_trade = db.execute("SELECT * FROM trades ORDER BY id DESC LIMIT 1;").fetchone()
     print(last_trade)

@@ -1,8 +1,19 @@
 import httpx
+import backoff
 
 
+@backoff.on_exception(backoff.expo, httpx.RequestError, max_tries=8)
+@backoff.on_exception(backoff.expo, httpx.HTTPStatusError, max_tries=8)
 def gecko_coin_list():
-    res = httpx.get("https://api.coingecko.com/api/v3/coins/list", timeout=10)
+    try:
+        res = httpx.get("https://api.coingecko.com/api/v3/coins/list", timeout=10)
+        res.raise_for_status()
+    except httpx.RequestError as exc:
+        print(f"An error occurred while requesting {exc.request.url!r}.")
+    except httpx.HTTPStatusError as exc:
+        print(
+            f"Error response {exc.response.status_code} while requesting {exc.request.url!r}."
+        )
     coin_list = res.json()
     return coin_list
 

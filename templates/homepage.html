@@ -9,7 +9,6 @@
         $('.ui.search.dropdown').dropdown();
         $(" #try_your_luck").click(function () {
             $("#trade-form").modal();
-            // $(".ui.selection.dropdown .menu>.item").css("background-image", "url(static/icons/eth.svg");
         });
         $("#c2b").on('change', function () {
             // causes issues with clearing out menu div before it can be populated - replace
@@ -24,7 +23,8 @@
                 success: function (response) {
                     // populate fields in second dropdown based on available trading pairs
                     var dropMenu = document.querySelector("#c2sDrop");
-                    for (val of response) {
+                    var iconList = "{{svg_icons}}";
+                    for (val of response.sort()) {
                         var option = document.createElement("div");
                         option.value = val;
                         option.text = val;
@@ -33,7 +33,11 @@
                         option.dataset.value = val;
                         var image = document.createElement("IMG");
                         image.alt = " ";
-                        image.src = "/static/icons/doge.svg";
+                        if (iconList.includes(val)) {
+                            image.src = "/static/icons/" + val + ".svg";
+                        } else {
+                            image.src = "/static/icons/generic.svg"
+                        };
                         image.width = 20;
                         image.height = 20;
                         option.prepend(image);

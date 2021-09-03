@@ -1,3 +1,4 @@
+from json.decoder import JSONDecodeError
 from fastapi import FastAPI, Depends, BackgroundTasks
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -14,12 +15,11 @@ import configparser
 from binance import Client
 import uuid
 import httpx
-from resources.currency_info import currency_codes, gecko_coin_list, svg_icon_codes
+from resources.currency_info import currency_codes, coin_list, svg_icon_codes
 from forex_python.converter import CurrencyRates
 from starlette.responses import FileResponse
 from collections import defaultdict
 
-coin_list = gecko_coin_list()
 cfg = configparser.ConfigParser()
 cfg.read("binance_api_key.cfg")  # access api credentials
 
@@ -71,9 +71,14 @@ assets, set_of_base_coins = get_base_and_quote_assets()
 def convert_to_dollars(gecko_id):
     """Uses gecko_id to get current price of a given coin (quote asset) in dollars from coingecko's public API and returns it"""
     params = {"ids": f"{gecko_id}", "vs_currencies": "usd"}
-    response = httpx.get(
-        "https://api.coingecko.com/api/v3/simple/price", params=params, timeout=None
-    )
+    try:
+        response = httpx.get(
+            "https://api.coingecko.com/api/v3/simple/price", params=params, timeout=None
+        )
+    except JSONDecodeError as exc:
+        print(exc)
+        print(exc.message)
+
     dollars = response.json()[f"{gecko_id}"]["usd"]
     return dollars
 
@@ -137,7 +142,7 @@ def fetch_crypto_data(id: int, user_amount: float, symbol: str):
         after_trade = before_trade + (
             float(row._mapping["percentage_change"]) / 100 * before_trade
         )
-    gecko_coin_list = coin_list
+    gecko_coin_list = coin_list()
     if row._mapping["quote_asset"].upper() in currency_codes:
         exchange = CurrencyRates()
         value_of_coin_in_dollars = exchange.get_rate(

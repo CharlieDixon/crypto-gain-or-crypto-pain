@@ -4,7 +4,7 @@ import backoff
 
 @backoff.on_exception(backoff.expo, httpx.RequestError, max_tries=8)
 @backoff.on_exception(backoff.expo, httpx.HTTPStatusError, max_tries=8)
-def gecko_coin_list():
+def coin_list():
     try:
         res = httpx.get("https://api.coingecko.com/api/v3/coins/list", timeout=10)
         res.raise_for_status()

@@ -4,3 +4,5 @@ __pycache__
 crypto.db
 crypto
 binance_api_key.cfg
+.DS_Store
+.vscode/launch.json

@@ -1,6 +1,8 @@
 import unittest
 from unittest.mock import patch
-from main import get_base_and_quote_assets
+from main import get_base_and_quote_assets, convert_to_dollars
+import respx
+from httpx import Response
 
 
 class TestMain(unittest.TestCase):
@@ -36,6 +38,19 @@ class TestMain(unittest.TestCase):
             mocked_binance.return_value = exchange_info_example
             response = get_base_and_quote_assets()
             self.assertEqual(response, expected_tuple)
+
+    @respx.mock
+    def test_convert_to_dollars(self):
+        test_id = "ethereum"
+        params = {"ids": test_id, "vs_currencies": "usd"}
+        route = respx.get(
+            "https://api.coingecko.com/api/v3/simple/price", params=params
+        ).mock(return_value=Response(200, json={test_id: {"usd": 3000}}))
+        actual = convert_to_dollars(test_id)
+        expected = 3000
+        assert route.called
+        assert respx.calls.call_count == 1
+        self.assertEqual(actual, expected)
 
 
 if __name__ == "__main__":

@@ -6,3 +6,4 @@ Jinja2
 httpx
 forex-python
 aiofiles
+respx

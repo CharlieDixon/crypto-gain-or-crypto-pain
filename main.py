@@ -125,11 +125,6 @@ def select_trade_row(symbol: str):
 def fetch_crypto_data(id: int, user_amount: float, symbol: str):
     """Connects to local database and returns data from binance API for the currency pair the user has inputted before committing to database."""
     row = select_trade_row(symbol)
-    print(row)
-
-    db = SessionLocal()
-
-    trade = db.query(Trades).filter(Trades.id == id).first()
 
     percentage_change_for_pair = float(row._mapping[Cryptocurrency].percentage_change)
     before_trade = float(user_amount)
@@ -154,11 +149,13 @@ def fetch_crypto_data(id: int, user_amount: float, symbol: str):
     before_trade_in_dollars = before_trade * value_of_coin_in_dollars
     after_trade_in_dollars = after_trade * value_of_coin_in_dollars
     gain_or_pain_in_dollars = after_trade_in_dollars - before_trade_in_dollars
-    trade.before_trade_in_dollars = before_trade_in_dollars
-    trade.gain_or_pain_in_dollars = gain_or_pain_in_dollars
-    trade.percentage_change_for_selected_pair = percentage_change_for_pair
-    db.add(trade)
-    db.commit()
+    with SessionLocal() as session:
+        trade = session.query(Trades).filter(Trades.id == id).first()
+        trade.before_trade_in_dollars = before_trade_in_dollars
+        trade.gain_or_pain_in_dollars = gain_or_pain_in_dollars
+        trade.percentage_change_for_selected_pair = percentage_change_for_pair
+        session.add(trade)
+        session.commit()
 
 
 @app.get("/favicon.ico")
@@ -203,7 +200,6 @@ def home(
 @app.post("/gain-or-pain")
 def user_gain_or_pain(
     trade_request: TradeRequest,
-    db: Session = Depends(get_db),
 ):
     """Adds a user-defined cryptocurrency to "trades" database and runs background task to find relevant info on success of trade."""
     trade = Trades()
@@ -212,23 +208,19 @@ def user_gain_or_pain(
     symbol = trade_request.base_asset + trade_request.quote_asset
     trade.symbol = symbol
     trade.user_amount = trade_request.user_amount
-    print("posted", trade.user_amount)
-    db.add(trade)
-    db.commit()
+    with SessionLocal() as session:
+        session.add(trade)
+        session.commit()
 
-    print("before fetch")
     fetch_crypto_data(trade.id, trade.user_amount, trade.symbol)
-    print("after fetch")
-
-    db.close()
 
 
 @app.get("/trade-db")
-def trade_db(request: Request, db: Session = Depends(get_db)):
+def trade_db():
     # gets last db entry i.e. last trade submitted: change to use IDs
-    print("get")
-    last_trade = db.execute("SELECT * FROM trades ORDER BY id DESC LIMIT 1;").fetchone()
-    print(last_trade)
+    with SessionLocal() as session:
+        last_trade = session.query(Trades).order_by(Trades.id.desc()).first()
+
     total_user_dollars = float(last_trade.before_trade_in_dollars) + float(
         last_trade.gain_or_pain_in_dollars
     )

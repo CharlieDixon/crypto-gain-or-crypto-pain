@@ -113,46 +113,41 @@ get_all_coins(assets)
 
 
 def select_trade_row(symbol: str):
-    conn = engine.connect()
-    # implicitly joins on foreign key defined in models.py
-    selection = (
-        select(Cryptocurrency, Trades.user_amount)
-        .filter(Cryptocurrency.symbol == symbol)
-        .join(Trades)
-    )
-    result = conn.execute(selection)
-    row = result.fetchone()
-    conn.close()
+    with SessionLocal() as session:
+        row = (
+            session.query(Cryptocurrency, Trades.user_amount)
+            .join(Trades, Trades.symbol == symbol)
+            .first()
+        )
     return row
 
 
 def fetch_crypto_data(id: int, user_amount: float, symbol: str):
     """Connects to local database and returns data from binance API for the currency pair the user has inputted before committing to database."""
     row = select_trade_row(symbol)
+    print(row)
 
     db = SessionLocal()
 
     trade = db.query(Trades).filter(Trades.id == id).first()
 
-    percentage_change_for_selected_pair = float(row._mapping["percentage_change"])
+    percentage_change_for_pair = float(row._mapping[Cryptocurrency].percentage_change)
     before_trade = float(user_amount)
-    if float(row._mapping["percentage_change"]) == 0:
+    if percentage_change_for_pair == 0:
         after_trade = before_trade
     else:
-        after_trade = before_trade + (
-            float(row._mapping["percentage_change"]) / 100 * before_trade
-        )
+        after_trade = before_trade + (percentage_change_for_pair / 100 * before_trade)
     gecko_coin_list = coin_list()
-    if row._mapping["quote_asset"].upper() in currency_codes:
+    if row._mapping[Cryptocurrency].quote_asset.upper() in currency_codes:
         exchange = CurrencyRates()
         value_of_coin_in_dollars = exchange.get_rate(
-            row._mapping["quote_asset"].upper(), "USD"
+            row._mapping[Cryptocurrency].quote_asset.upper(), "USD"
         )
     else:
         gecko_id, symb, name = [
             coin
             for coin in gecko_coin_list
-            if coin["symbol"] == row._mapping["quote_asset"].lower()
+            if coin["symbol"] == row._mapping[Cryptocurrency].quote_asset.lower()
         ][0].values()
         value_of_coin_in_dollars = convert_to_dollars(gecko_id)
 
@@ -161,7 +156,7 @@ def fetch_crypto_data(id: int, user_amount: float, symbol: str):
     gain_or_pain_in_dollars = after_trade_in_dollars - before_trade_in_dollars
     trade.before_trade_in_dollars = before_trade_in_dollars
     trade.gain_or_pain_in_dollars = gain_or_pain_in_dollars
-    trade.percentage_change_for_selected_pair = percentage_change_for_selected_pair
+    trade.percentage_change_for_selected_pair = percentage_change_for_pair
     db.add(trade)
     db.commit()
 
@@ -217,10 +212,13 @@ def user_gain_or_pain(
     symbol = trade_request.base_asset + trade_request.quote_asset
     trade.symbol = symbol
     trade.user_amount = trade_request.user_amount
+    print("posted", trade.user_amount)
     db.add(trade)
     db.commit()
 
+    print("before fetch")
     fetch_crypto_data(trade.id, trade.user_amount, trade.symbol)
+    print("after fetch")
 
     db.close()
 
@@ -228,6 +226,7 @@ def user_gain_or_pain(
 @app.get("/trade-db")
 def trade_db(request: Request, db: Session = Depends(get_db)):
     # gets last db entry i.e. last trade submitted: change to use IDs
+    print("get")
     last_trade = db.execute("SELECT * FROM trades ORDER BY id DESC LIMIT 1;").fetchone()
     print(last_trade)
     total_user_dollars = float(last_trade.before_trade_in_dollars) + float(

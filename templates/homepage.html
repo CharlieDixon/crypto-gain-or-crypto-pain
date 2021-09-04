@@ -93,12 +93,12 @@
                         'user_amount': amount,
                     });
                     TradeSubmit(dataObject)
-                    setTimeout(() => { TradeGet() }, 500);
+                    setTimeout(() => { TradeGet() }, 1000);
                     event.preventDefault();
                 },
             });
         function openModal() {
-            $("#trade-form").modal({ fadeDuration: 250 });
+            $("#trade-form").modal({ fadeDuration: 400 });
         };
         function TradeSubmit(dataObject) {
             $.ajax({
@@ -129,7 +129,7 @@
         };
         $("#trade-form").submit(function () {
             $("#popup").modal({
-                fadeDuration: 500
+                fadeDuration: 1000
             });
         });
         $("#resubmit").click(function () {

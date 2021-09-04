@@ -107,7 +107,6 @@ def get_all_coins(assets):
             crypto.pain = True if crypto.percentage_change < -5 else False
             db.add(crypto)
     db.commit()
-    db.close()
 
 
 get_all_coins(assets)

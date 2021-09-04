@@ -67,31 +67,12 @@ def get_base_and_quote_assets():
         set_of_base_coins.add(pair["baseAsset"])
 
 
-@app.get("/base-and-quote-assets")
-async def get_assets():
-    return assets, set_of_base_coins
-
-
-def convert_to_dollars(gecko_id):
-    """Uses gecko_id to get current price of a given coin (quote asset) in dollars from coingecko's public API and returns it"""
-    params = {"ids": f"{gecko_id}", "vs_currencies": "usd"}
-    try:
-        response = httpx.get(
-            "https://api.coingecko.com/api/v3/simple/price", params=params, timeout=None
-        )
-    except JSONDecodeError as exc:
-        print(exc)
-        print(exc.message)
-
-    dollars = response.json()[f"{gecko_id}"]["usd"]
-    return dollars
-
-
-def get_all_coins(assets):
+@app.on_event("startup")
+async def get_all_coins():
     """At initiation of API fetches information on all trading pairs and adds to database."""
     db = SessionLocal()
     pair_tickers = client.get_ticker()
-
+    assets, set_of_base_coins = await get_assets()
     for pair in pair_tickers:
         exists = (
             db.query(Cryptocurrency)
@@ -113,7 +94,24 @@ def get_all_coins(assets):
     db.commit()
 
 
-get_all_coins(assets)
+@app.get("/base-and-quote-assets")
+async def get_assets():
+    return assets, set_of_base_coins
+
+
+def convert_to_dollars(gecko_id):
+    """Uses gecko_id to get current price of a given coin (quote asset) in dollars from coingecko's public API and returns it"""
+    params = {"ids": f"{gecko_id}", "vs_currencies": "usd"}
+    try:
+        response = httpx.get(
+            "https://api.coingecko.com/api/v3/simple/price", params=params, timeout=None
+        )
+    except JSONDecodeError as exc:
+        print(exc)
+        print(exc.message)
+
+    dollars = response.json()[f"{gecko_id}"]["usd"]
+    return dollars
 
 
 def select_trade_row(symbol: str):

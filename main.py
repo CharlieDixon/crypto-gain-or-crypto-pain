@@ -85,11 +85,11 @@ async def get_all_coins():
             crypto.symbol = pair["symbol"]
             crypto.base_asset = assets.get(pair["symbol"])[0]
             crypto.quote_asset = assets.get(pair["symbol"])[1]
-            crypto.price = float(pair["weightedAvgPrice"])
-            crypto.change = float(pair["priceChange"])
-            crypto.percentage_change = float(pair["priceChangePercent"])
-            crypto.gain = True if crypto.percentage_change > 5 else False
-            crypto.pain = True if crypto.percentage_change < -5 else False
+            crypto.price = pair["weightedAvgPrice"]
+            crypto.change = pair["priceChange"]
+            crypto.percentage_change = pair["priceChangePercent"]
+            crypto.gain = True if float(pair["priceChangePercent"]) > 5 else False
+            crypto.pain = True if float(pair["priceChangePercent"]) < -5 else False
             db.add(crypto)
     db.commit()
 
@@ -154,9 +154,9 @@ def fetch_crypto_data(id: int, user_amount: float, symbol: str):
     gain_or_pain_in_dollars = after_trade_in_dollars - before_trade_in_dollars
     with SessionLocal() as session:
         trade = session.query(Trades).filter(Trades.id == id).first()
-        trade.before_trade_in_dollars = before_trade_in_dollars
-        trade.gain_or_pain_in_dollars = gain_or_pain_in_dollars
-        trade.percentage_change_for_selected_pair = percentage_change_for_pair
+        trade.before_trade_in_dollars = str(before_trade_in_dollars)
+        trade.gain_or_pain_in_dollars = str(gain_or_pain_in_dollars)
+        trade.percentage_change_for_selected_pair = str(percentage_change_for_pair)
         session.add(trade)
         session.commit()
 
@@ -210,7 +210,7 @@ def user_gain_or_pain(
     trade.quote_asset = trade_request.quote_asset
     symbol = trade_request.base_asset + trade_request.quote_asset
     trade.symbol = symbol
-    trade.user_amount = trade_request.user_amount
+    trade.user_amount = str(trade_request.user_amount)
     with SessionLocal() as session:
         session.add(trade)
         session.commit()

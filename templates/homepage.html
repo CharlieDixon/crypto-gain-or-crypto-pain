@@ -51,6 +51,7 @@
         });
         $('.ui.form')
             .form({
+                on: "blur",
                 fields: {
                     coin_to_buy: {
                         identifier: 'c2b',
@@ -74,7 +75,7 @@
                         identifier: 'a2s',
                         rules: [
                             {
-                                type: 'empty',
+                                type: 'decimal',
                                 prompt: 'Please enter the amount you would like to sell'
                             }
                         ]

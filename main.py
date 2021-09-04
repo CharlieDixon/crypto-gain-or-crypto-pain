@@ -107,6 +107,7 @@ def get_all_coins(assets):
             crypto.pain = True if crypto.percentage_change < -5 else False
             db.add(crypto)
     db.commit()
+    db.close()
 
 
 get_all_coins(assets)
@@ -116,7 +117,7 @@ def select_trade_row(symbol: str):
     with SessionLocal() as session:
         row = (
             session.query(Cryptocurrency, Trades.user_amount)
-            .join(Trades, Trades.symbol == symbol)
+            .where(Cryptocurrency.symbol == symbol)
             .first()
         )
     return row

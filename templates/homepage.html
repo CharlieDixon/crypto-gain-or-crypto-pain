@@ -12,7 +12,7 @@
         });
         $("#c2b").on('change', function () {
             // causes issues with clearing out menu div before it can be populated - replace
-            // $("#c2s> div").slice(1).remove();
+            $("#c2sDrop> div").slice(0).remove();
             var cointobuy = $("#c2b").dropdown('get value');
             $.ajax({
                 url: "/limit-dropdown",
@@ -32,7 +32,7 @@
                         option.className = "item";
                         option.dataset.value = val;
                         var image = document.createElement("IMG");
-                        image.alt = " ";
+                        image.alt = "$$$";
                         if (iconList.includes(val)) {
                             image.src = "/static/icons/" + val + ".svg";
                         } else {
@@ -83,7 +83,6 @@
                 on: 'blur',
                 inline: true,
                 onSuccess: function (event) {
-                    // var coin_to_buy = $("#c2b").val();
                     var coin_to_buy = $("#c2b").dropdown('get value');
                     var coin_to_sell = $("#c2s").dropdown('get value');
                     var amount = $("#amount").val();
@@ -278,7 +277,7 @@
                     </div>
                 </div>
                 <div class="field">
-                    <p><label>Amount to sell: </label><input placeholder="e.g. 2" name="a2s" type="text" id="amount">
+                    <p><label>Amount to sell: </label><input placeholder="" name="a2s" type="text" id="amount">
                     </p>
                 </div>
                 <p>

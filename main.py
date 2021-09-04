@@ -35,6 +35,10 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 models.Base.metadata.create_all(bind=engine)
 
 
+assets = {}
+set_of_base_coins = set()
+
+
 class TradeRequest(BaseModel):
     base_asset: str
     quote_asset: str
@@ -54,18 +58,18 @@ def get_db():
         db.close()
 
 
+@app.on_event("startup")
 def get_base_and_quote_assets():
     """Returns a dictionary of assets from binance API and a set containing the base assets"""
     exchange_info = client.get_exchange_info()
-    assets = {}
-    set_of_base_coins = set()
     for pair in exchange_info["symbols"]:
         assets[pair["symbol"]] = pair["baseAsset"], pair["quoteAsset"]
         set_of_base_coins.add(pair["baseAsset"])
+
+
+@app.get("/base-and-quote-assets")
+async def get_assets():
     return assets, set_of_base_coins
-
-
-assets, set_of_base_coins = get_base_and_quote_assets()
 
 
 def convert_to_dollars(gecko_id):

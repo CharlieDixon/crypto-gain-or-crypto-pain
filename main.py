@@ -117,6 +117,7 @@ def select_trade_row(symbol: str):
         row = (
             session.query(Cryptocurrency, Trades.user_amount)
             .where(Cryptocurrency.symbol == symbol)
+            .join(Trades)
             .first()
         )
     return row

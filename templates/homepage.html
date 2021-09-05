@@ -24,8 +24,8 @@
                     var dropMenu = document.querySelector("#c2sDrop");
                     var iconList = "{{svg_icons}}";
                     var responseSorted = $.map(response, function (value, index) {
-                        return [value].sort();
-                    });
+                        return [value];
+                    }).sort();
                     for (val of responseSorted) {
                         var option = document.createElement("div");
                         option.value = val;
@@ -121,17 +121,11 @@
                     $("#win-or-lose").text("Great success!");
                     $("#photo-result").attr("src", "/static/moneybag.svg");
                     $("#dollar-result").text("You gained $" + positive_num + ", bringing your starting total from $" + before_dollar + " to $" + user_dollar + "!");
-                    console.log('tada');
-                    $("#popup").transition('tada')
-                    $('#popup').css('display', 'inline-block !important')
-
                 }
                 else {
                     $("#win-or-lose").text("Massive failure :(");
                     $("#photo-result").attr("src", "/static/skulldollar.svg");
-                    $("#dollar-result").text("You lost $" + positive_num + ", taking your starting total from $" + before_dollar + " down to $" + user_dollar);
-                    $("#popup").transition('shake')
-
+                    $("#dollar-result").text("You lost $" + positive_num + ", taking your starting total from $" + before_dollar + " down to $" + user_dollar)
                 }
             });
         };

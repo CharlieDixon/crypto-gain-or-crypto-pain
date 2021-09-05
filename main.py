@@ -15,7 +15,7 @@ import configparser
 from binance import Client
 import uuid
 import httpx
-from resources.currency_info import currency_codes, coin_list, svg_icon_codes
+from resources.currency_info import currency_codes, svg_icon_codes
 from forex_python.converter import CurrencyRates
 from starlette.responses import FileResponse
 from collections import defaultdict
@@ -34,9 +34,9 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 models.Base.metadata.create_all(bind=engine)
 
-
 assets = {}
 set_of_base_coins = set()
+gecko_coin_list = []
 
 
 class TradeRequest(BaseModel):
@@ -69,7 +69,7 @@ def get_base_and_quote_assets():
 
 @app.on_event("startup")
 async def get_all_coins():
-    """At initiation of API fetches information on all trading pairs and adds to database."""
+    """At initiation of API fetches information on all binance trading pairs and adds to database."""
     db = SessionLocal()
     pair_tickers = client.get_ticker()
     assets, set_of_base_coins = await get_assets()
@@ -92,6 +92,24 @@ async def get_all_coins():
             crypto.pain = True if float(pair["priceChangePercent"]) < -5 else False
             db.add(crypto)
     db.commit()
+
+
+@app.on_event("startup")
+def get_gecko_coin_list():
+    global gecko_coin_list
+    try:
+        res = httpx.get("https://api.coingecko.com/api/v3/coins/list", timeout=10)
+    except httpx.RequestError as exc:
+        print(f"An error occurred while requesting {exc.request.url!r}.")
+    except httpx.HTTPStatusError as exc:
+        print(
+            f"Error response {exc.response.status_code} while requesting {exc.request.url!r}."
+        )
+    try:
+        gecko_coin_list = res.json()
+    except JSONDecodeError as exc:
+        print(exc)
+        print(exc.msg)
 
 
 @app.get("/base-and-quote-assets")
@@ -128,14 +146,13 @@ def select_trade_row(symbol: str):
 def fetch_crypto_data(id: int, user_amount: float, symbol: str):
     """Connects to local database and returns data from binance API for the currency pair the user has inputted before committing to database."""
     row = select_trade_row(symbol)
-
     percentage_change_for_pair = float(row._mapping[Cryptocurrency].percentage_change)
     before_trade = float(user_amount)
     if percentage_change_for_pair == 0:
         after_trade = before_trade
     else:
         after_trade = before_trade + (percentage_change_for_pair / 100 * before_trade)
-    gecko_coin_list = coin_list()
+    global gecko_coin_list
     if row._mapping[Cryptocurrency].quote_asset.upper() in currency_codes:
         exchange = CurrencyRates()
         value_of_coin_in_dollars = exchange.get_rate(

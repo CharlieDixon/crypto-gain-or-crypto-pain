@@ -122,6 +122,11 @@
                     $("#photo-result").attr("src", "/static/moneybag.svg");
                     $("#dollar-result").text("You gained $" + positive_num + ", bringing your starting total from $" + before_dollar + " to $" + user_dollar + "!");
                 }
+                else if (data['gain_or_pain_in_dollars'] == 0) {
+                    $("#win-or-lose").text("Nothing gained nothing lost!");
+                    $("#photo-result").attr("src", "/static/shrug.svg");
+                    $("#dollar-result").text("Your balance after the trade stayed the same at $" + before_dollar)
+                }
                 else {
                     $("#win-or-lose").text("Massive failure :(");
                     $("#photo-result").attr("src", "/static/skulldollar.svg");

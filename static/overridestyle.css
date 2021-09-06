@@ -16,3 +16,7 @@
    .ui.dropdown>.text>img{
 margin-top: -.3em !important;
 }
+
+#popup.modal {
+    text-align: center !important;
+}

@@ -257,7 +257,6 @@ def trade_db():
         last_trade = session.query(Trades).order_by(Trades.id.desc()).first()
         logger.debug(last_trade.before_trade_in_dollars)
         logger.debug(last_trade.gain_or_pain_in_dollars)
-    )
     total_user_dollars = float(last_trade.before_trade_in_dollars) + float(
         last_trade.gain_or_pain_in_dollars
     )

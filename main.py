@@ -19,8 +19,20 @@ from resources.currency_info import currency_codes, svg_icon_codes
 from forex_python.converter import CurrencyRates
 from starlette.responses import FileResponse
 from collections import defaultdict
+from loguru import logger
+import sys
+import backoff
+
+logger.remove()
+logger.add(
+    sys.stderr,
+    colorize=True,
+    format="<c>{time:HH:MM:SS}</c> | {level} | <level><blue>{message}</blue></level>",
+    level="DEBUG",
+)
 
 cfg = configparser.ConfigParser()
+
 cfg.read("binance_api_key.cfg")  # access api credentials
 
 client = Client(cfg.get("KEYS", "api_key"), cfg.get("KEYS", "api_secret_key"))
@@ -95,6 +107,7 @@ async def get_all_coins():
 
 
 @app.on_event("startup")
+@backoff.on_predicate(backoff.constant, interval=5, max_tries=8)
 def get_gecko_coin_list():
     global gecko_coin_list
     try:
@@ -107,9 +120,11 @@ def get_gecko_coin_list():
         )
     try:
         gecko_coin_list = res.json()
-    except JSONDecodeError as exc:
-        print(exc)
-        print(exc.msg)
+        logger.info(gecko_coin_list[0])
+    except JSONDecodeError:
+        logger.opt(exception=True).error("Exception logged with error level:")
+        logger.info("Couldn't get gecko coin list")
+    return gecko_coin_list
 
 
 @app.get("/base-and-quote-assets")
@@ -117,6 +132,7 @@ async def get_assets():
     return assets, set_of_base_coins
 
 
+@logger.catch
 def convert_to_dollars(gecko_id):
     """Uses gecko_id to get current price of a given coin (quote asset) in dollars from coingecko's public API and returns it"""
     params = {"ids": f"{gecko_id}", "vs_currencies": "usd"}
@@ -125,8 +141,7 @@ def convert_to_dollars(gecko_id):
             "https://api.coingecko.com/api/v3/simple/price", params=params, timeout=None
         )
     except JSONDecodeError as exc:
-        print(exc)
-        print(exc.message)
+        logger.info(exc)
 
     dollars = response.json()[f"{gecko_id}"]["usd"]
     return dollars
@@ -240,7 +255,9 @@ def trade_db():
     # gets last db entry i.e. last trade submitted: change to use IDs
     with SessionLocal() as session:
         last_trade = session.query(Trades).order_by(Trades.id.desc()).first()
-
+        logger.debug(last_trade.before_trade_in_dollars)
+        logger.debug(last_trade.gain_or_pain_in_dollars)
+    )
     total_user_dollars = float(last_trade.before_trade_in_dollars) + float(
         last_trade.gain_or_pain_in_dollars
     )

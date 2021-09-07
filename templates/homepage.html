@@ -119,17 +119,17 @@
                 var before_dollar = $("#dollar-result").data("dollars").before_dollars.toFixed(2);
                 if (data['gain_or_pain_in_dollars'] > 0.1) {
                     $("#win-or-lose").text("Great success!");
-                    $("#photo-result").attr("src", "/static/moneybag.svg");
+                    $("#photo-result").attr("src", "/static/images/moneybag.svg");
                     $("#dollar-result").text("You gained $" + positive_num + ", bringing your starting total from $" + before_dollar + " to $" + user_dollar + "!");
                 }
                 else if (data['gain_or_pain_in_dollars'] < -0.1) {
                     $("#win-or-lose").text("Massive failure :(");
-                    $("#photo-result").attr("src", "/static/skulldollar.svg");
+                    $("#photo-result").attr("src", "/static/images/skulldollar.svg");
                     $("#dollar-result").text("You lost $" + positive_num + ", taking your starting total from $" + before_dollar + " down to $" + user_dollar)
                 }
                 else {
                     $("#win-or-lose").text("Nothing gained nothing lost!");
-                    $("#photo-result").attr("src", "/static/shrug.svg");
+                    $("#photo-result").attr("src", "/static/images/shrug.svg");
                     $("#dollar-result").text("Your balance after the trade stayed the same at $" + before_dollar)
                 }
             });

@@ -169,8 +169,9 @@
 </style>
 <form>
     <div class="ui left icon input">
-        <input name="search" type="text" class="search" id="userInput" required="required" placeholder="Search..."
-            onkeyup="filterTable()" data-com.bitwarden.browser.user-edited="yes" value={{ search or '' }}>
+        <input name="search" type="text" class="ui search icon input" id="userInput" required="required"
+            placeholder="Search..." onkeyup="filterTable()" data-com.bitwarden.browser.user-edited="yes" value={{ search
+            or '' }}>
         <i class="search icon"></i>
     </div>
     <div class="ui checkbox">
@@ -325,6 +326,11 @@
 
 <script>
     function filterTable() {
+        // adding in loading symbol here on keyup, need to separate into separate function
+        $('.ui.icon.input').api("set loading");
+        setTimeout(function () {
+            $('.ui.icon.input').api("remove loading");
+        }, 150);
         // Declare variables
         var input, filter, table, tr, td, i, txtValue;
         input = document.getElementById("userInput");

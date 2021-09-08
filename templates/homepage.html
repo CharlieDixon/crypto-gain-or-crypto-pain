@@ -6,6 +6,99 @@
 <link rel="stylesheet" href="static/overridestyle.css" />
 <script>
     $(document).ready(function () {
+        $('.ui.search.category')
+            .search({
+                type: 'category',
+                minCharacters: 3,
+                apiSettings: {
+                    // url: '//api.github.com/search/repositories?q={query}"',
+                    url: '/coin-market-cap?symbol={query}"',
+                    onResponse: function (geckoResponse) {
+                        console.log(geckoResponse);
+                        console.log(geckoResponse.items);
+                        var
+                            response = {
+                                results: {}
+                            }
+                            ;
+                        if (!geckoResponse || !geckoResponse.items) {
+                            return;
+                        }
+                        // translate CoinGecko API response to work with search
+                        $.each(geckoResponse.items, function (index, item) {
+                            console.log(item);
+                            var
+                                symbol = item.symbol || 'Doge',
+                                maxResults = 8
+                                ;
+                            if (index >= maxResults) {
+                                return false;
+                            }
+                            // create new symbol category
+                            if (response.results[symbol] === undefined) {
+                                response.results[symbol] = {
+                                    name: symbol,
+                                    results: []
+                                };
+                            }
+                            // add result to category
+                            response.results[symbol].results.push({
+                                title: item.name,
+                                description: item.description,
+                                url: item.html_url
+                            });
+                        });
+                        return response;
+                    }
+                }
+            })
+            ;
+        $('.ui.search.category.testclass')
+            .search({
+                type: 'category',
+                minCharacters: 3,
+                apiSettings: {
+                    url: "/coin-market-cap?gecko_id={query}",
+                    onResponse: function (geckoResponse) {
+                        console.log(geckoResponse);
+                        var
+                            response = {
+                                results: {}
+                            }
+                        console.log(response);
+                        ;
+                        if (!geckoResponse || !geckoResponse.items) {
+                            return;
+                        }
+                        // translate GitHub API response to work with search
+                        $.each(geckoResponse.items, function (index, item) {
+                            var
+                                language = item.language || 'Unknown',
+                                maxResults = 8
+                                ;
+                            if (index >= maxResults) {
+                                return false;
+                            }
+                            // create new language category
+                            if (response.results[language] === undefined) {
+                                response.results[language] = {
+                                    name: language,
+                                    results: []
+                                };
+                            }
+                            // add result to category
+                            response.results[language].results.push({
+                                title: item.name,
+                                description: item.description,
+                                url: item.html_url
+                            });
+                        });
+                        console.log(response)
+                        return response;
+                    }
+                }
+            })
+            ;
         $('.ui.search.dropdown').dropdown();
         $(" #try_your_luck").click(function () {
             $("#trade-form").modal();
@@ -188,6 +281,20 @@
     <button class="ui button">
         Reset
     </button>
+    <div class="ui search category">
+        <div class="ui left icon input">
+            <input class="prompt" type="text" placeholder="Search GitHub" autocomplete="off"
+                data-com.bitwarden.browser.user-edited="yes">
+            <i class="github icon"></i>
+        </div>
+    </div>
+    <div class="ui search category testclass">
+        <div class="ui left icon input">
+            <input class="prompt" type="text" placeholder="Search GitHub" autocomplete="off"
+                data-com.bitwarden.browser.user-edited="yes">
+            <i class="github icon"></i>
+        </div>
+    </div>
 </form>
 <button id="try_your_luck" class="ui animated button green" tabindex="0">
     <div class="visible content">Try your luck!</div>

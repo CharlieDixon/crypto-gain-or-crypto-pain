@@ -77,6 +77,7 @@ def get_base_and_quote_assets():
     for pair in exchange_info["symbols"]:
         assets[pair["symbol"]] = pair["baseAsset"], pair["quoteAsset"]
         set_of_base_coins.add(pair["baseAsset"])
+    breakpoint()
 
 
 @app.on_event("startup")
@@ -196,6 +197,53 @@ def fetch_crypto_data(id: int, user_amount: float, symbol: str):
 @app.get("/favicon.ico")
 async def get_favicon():
     return FileResponse("static/favicon.ico")
+
+
+@app.get("/coin-market-cap")
+async def get_coin_market_cap(symbol):
+    symbol = symbol.lower().rstrip('"')
+    logger.debug(symbol)
+    try:
+        found_value = [coin for coin in gecko_coin_list if coin["symbol"] == symbol][0]
+        breakpoint()
+        logger.debug(found_value)
+    except IndexError as exc:
+        logger.debug(exc)
+        pass
+    with httpx.Client() as client:
+        gecko_id = "dogecoin"
+        params = {
+            "id": f"{gecko_id}",
+            "localization": "false",
+            "developer_data": "false",
+            "community_data": "false",
+        }
+        try:
+            response = client.get(
+                f"https://api.coingecko.com/api/v3/coins/{gecko_id}",
+                params=params,
+                timeout=None,
+            )
+        except:
+            logger.error("Exception occurred while fetching request")
+        res = response.json()
+        # "{'id': 'ethereum', 'symbol': 'eth', 'name': 'Ethereum'}"
+        homepage = res["links"]["homepage"][0]
+        logger.debug(res["name"])
+        logger.debug(homepage)
+        market_cap_rank = res["market_cap_rank"]
+        categories = res["categories"]
+        price_change_percentage_1y = res["market_data"]["price_change_percentage_1y"]
+        return {
+            "items": [
+                {
+                    "name": "Dogecoin",
+                    "html_url": homepage,
+                    "language": "doge",
+                    "description": "my god it works",
+                },
+            ],
+        }
 
 
 @app.get("/")

@@ -22,6 +22,7 @@ from collections import defaultdict
 from loguru import logger
 import sys
 import backoff
+import difflib
 
 logger.remove()
 logger.add(
@@ -77,7 +78,6 @@ def get_base_and_quote_assets():
     for pair in exchange_info["symbols"]:
         assets[pair["symbol"]] = pair["baseAsset"], pair["quoteAsset"]
         set_of_base_coins.add(pair["baseAsset"])
-    breakpoint()
 
 
 @app.on_event("startup")
@@ -201,17 +201,38 @@ async def get_favicon():
 
 @app.get("/coin-market-cap")
 async def get_coin_market_cap(symbol):
+    binance_gecko_mismatch = {
+        "agi": "agix",
+        "arn": "arnv",
+        "strat": "stratx",
+        "bchabc": "bcha",
+        "iota": "miota",
+        "yoyo": "yoyow",
+    }
+    coin_gecko_names = [
+        value[1]
+        for elem in gecko_coin_list
+        for value in elem.items()
+        if value[0] == "symbol"
+    ]
     symbol = symbol.lower().rstrip('"')
+    if symbol not in coin_gecko_names:
+        if symbol in binance_gecko_mismatch:
+            symbol = binance_gecko_mismatch.get(symbol)
+        else:
+            symbol = "btc"
     logger.debug(symbol)
     try:
         found_value = [coin for coin in gecko_coin_list if coin["symbol"] == symbol][0]
+        matches = [coin for coin in gecko_coin_list if symbol in coin["symbol"]]
+        closest = difflib.get_close_matches(symbol, matches, n=8)
         breakpoint()
         logger.debug(found_value)
     except IndexError as exc:
         logger.debug(exc)
-        pass
+    gecko_id = found_value.get("id")
+    gecko_name = found_value.get("name")
     with httpx.Client() as client:
-        gecko_id = "dogecoin"
         params = {
             "id": f"{gecko_id}",
             "localization": "false",
@@ -227,7 +248,6 @@ async def get_coin_market_cap(symbol):
         except:
             logger.error("Exception occurred while fetching request")
         res = response.json()
-        # "{'id': 'ethereum', 'symbol': 'eth', 'name': 'Ethereum'}"
         homepage = res["links"]["homepage"][0]
         logger.debug(res["name"])
         logger.debug(homepage)
@@ -237,9 +257,9 @@ async def get_coin_market_cap(symbol):
         return {
             "items": [
                 {
-                    "name": "Dogecoin",
+                    "name": gecko_name,
                     "html_url": homepage,
-                    "language": "doge",
+                    "language": "language",
                     "description": "my god it works",
                 },
             ],

@@ -26,9 +26,10 @@
                         }
                         // translate CoinGecko API response to work with search
                         $.each(geckoResponse.items, function (index, item) {
+                            console.log(index);
                             console.log(item);
                             var
-                                symbol = item.symbol || 'Doge',
+                                symbol = item.symbol || 'N/A',
                                 maxResults = 8
                                 ;
                             if (index >= maxResults) {
@@ -45,7 +46,7 @@
                             response.results[symbol].results.push({
                                 title: item.name,
                                 description: item.description,
-                                url: item.html_url
+                                url: item.html_url,
                             });
                         });
                         return response;

@@ -220,50 +220,97 @@ async def get_coin_market_cap(symbol):
         if symbol in binance_gecko_mismatch:
             symbol = binance_gecko_mismatch.get(symbol)
         else:
-            symbol = "btc"
+            pass
     logger.debug(symbol)
-    try:
-        found_value = [coin for coin in gecko_coin_list if coin["symbol"] == symbol][0]
-        matches = [coin for coin in gecko_coin_list if symbol in coin["symbol"]]
-        closest = difflib.get_close_matches(symbol, matches, n=8)
-        breakpoint()
-        logger.debug(found_value)
-    except IndexError as exc:
-        logger.debug(exc)
-    gecko_id = found_value.get("id")
-    gecko_name = found_value.get("name")
+
+    matches = [coin["symbol"] for coin in gecko_coin_list if symbol in coin["symbol"]]
+    matches = [
+        {"id": coin["id"], "symbol": coin["symbol"], "name": coin["name"]}
+        for coin in gecko_coin_list
+        if symbol in coin["symbol"]
+    ]
+    match_symbols = [match.get("symbol") for match in matches]
+    closest = difflib.get_close_matches(symbol, match_symbols, n=8)
+
+    items = []
     with httpx.Client() as client:
-        params = {
-            "id": f"{gecko_id}",
-            "localization": "false",
-            "developer_data": "false",
-            "community_data": "false",
-        }
-        try:
-            response = client.get(
-                f"https://api.coingecko.com/api/v3/coins/{gecko_id}",
-                params=params,
-                timeout=None,
-            )
-        except:
-            logger.error("Exception occurred while fetching request")
-        res = response.json()
-        homepage = res["links"]["homepage"][0]
-        logger.debug(res["name"])
-        logger.debug(homepage)
-        market_cap_rank = res["market_cap_rank"]
-        categories = res["categories"]
-        price_change_percentage_1y = res["market_data"]["price_change_percentage_1y"]
-        return {
-            "items": [
-                {
-                    "name": gecko_name,
-                    "html_url": homepage,
-                    "language": "language",
-                    "description": "my god it works",
-                },
-            ],
-        }
+        for match in matches:
+            if match.get("symbol") in closest:
+                gecko_id = match.get("id")
+                gecko_name = match.get("name")
+                gecko_symbol = match.get("symbol")
+                params = {
+                    "id": f"{gecko_id}",
+                    "localization": "false",
+                    "developer_data": "false",
+                    "community_data": "false",
+                }
+                try:
+                    response = client.get(
+                        f"https://api.coingecko.com/api/v3/coins/{gecko_id}",
+                        params=params,
+                        timeout=None,
+                    )
+                except:
+                    logger.error("Exception occurred while fetching request")
+                res = response.json()
+                homepage = res["links"]["homepage"][0]
+                logger.debug(res["name"])
+                logger.debug(homepage)
+                price_change_percentage_1y = str(
+                    res["market_data"]["price_change_percentage_1y"]
+                )
+                market_cap_rank = (
+                    str(res["market_cap_rank"])
+                    if res["market_cap_rank"] != None
+                    else None
+                )
+                coingecko_rank = (
+                    str(res["coingecko_rank"])
+                    if res["coingecko_rank"] != None
+                    else None
+                )
+                price_change_percentage_1y = (
+                    price_change_percentage_1y
+                    if price_change_percentage_1y != "0.0"
+                    else None
+                )
+                categories = ", ".join(res["categories"])
+                logger.debug(f"categories: {categories}")
+                logger.debug(f"market_cap_rank: {market_cap_rank}")
+                logger.debug(
+                    f"price_change_percentage_1y: {price_change_percentage_1y}"
+                )
+                market_cap_description = (
+                    f"Market cap rank: {market_cap_rank or 'Unavailable'}"
+                )
+                coin_gecko_rank_description = (
+                    (f"<br>Coingecko rank: {coingecko_rank}") if coingecko_rank else ""
+                )
+                price_change_description = (
+                    (f"<br>Price change percentage 1y: {price_change_percentage_1y}")
+                    if price_change_percentage_1y is not None
+                    else ""
+                )
+                categories_description = (
+                    (f"<br>Categories: {categories}") if len(categories) != 0 else ""
+                )
+                description = (
+                    market_cap_description
+                    + coingecko_rank
+                    + price_change_description
+                    + categories_description
+                )
+
+                items.append(
+                    {
+                        "name": gecko_name,
+                        "symbol": gecko_symbol.upper(),
+                        "html_url": homepage,
+                        "description": description,
+                    }
+                )
+    return {"items": items}
 
 
 @app.get("/")

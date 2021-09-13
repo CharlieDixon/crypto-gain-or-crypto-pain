@@ -128,6 +128,16 @@ def get_gecko_coin_list():
     return gecko_coin_list
 
 
+def get_first_sentence_from_string(sentence):
+    if isinstance(sentence, str):
+        index = sentence.find(".")
+        if index != -1:
+            index += 1  # add 1 to include the fullstop itself.
+            return sentence[:index]
+    else:
+        return None
+
+
 @app.get("/base-and-quote-assets")
 async def get_assets():
     return assets, set_of_base_coins
@@ -257,8 +267,12 @@ async def get_coin_market_cap(symbol):
                 homepage = res["links"]["homepage"][0]
                 logger.debug(res["name"])
                 logger.debug(homepage)
+                price_change_percentage_1y = res["market_data"][
+                    "price_change_percentage_1y"
+                ]
+                # rounds up to two decimal places before converting back to string
                 price_change_percentage_1y = str(
-                    res["market_data"]["price_change_percentage_1y"]
+                    round(float(price_change_percentage_1y), 2)
                 )
                 market_cap_rank = (
                     str(res["market_cap_rank"])
@@ -276,6 +290,9 @@ async def get_coin_market_cap(symbol):
                     else None
                 )
                 categories = ", ".join(res["categories"])
+                coin_description = res["description"]["en"]
+                coin_description = get_first_sentence_from_string(coin_description)
+
                 logger.debug(f"categories: {categories}")
                 logger.debug(f"market_cap_rank: {market_cap_rank}")
                 logger.debug(
@@ -288,20 +305,24 @@ async def get_coin_market_cap(symbol):
                     (f"<br>Coingecko rank: {coingecko_rank}") if coingecko_rank else ""
                 )
                 price_change_description = (
-                    (f"<br>Price change percentage 1y: {price_change_percentage_1y}")
+                    (f"<br>1 year price change: {price_change_percentage_1y}%")
                     if price_change_percentage_1y is not None
                     else ""
                 )
                 categories_description = (
                     (f"<br>Categories: {categories}") if len(categories) != 0 else ""
                 )
-                description = (
-                    market_cap_description
-                    + coingecko_rank
-                    + price_change_description
-                    + categories_description
+                coin_description = (
+                    (f"<br><i>{coin_description}</i>") if coin_description else ""
                 )
 
+                description = (
+                    market_cap_description
+                    + coin_gecko_rank_description
+                    + price_change_description
+                    + categories_description
+                    + coin_description
+                )
                 items.append(
                     {
                         "name": gecko_name,

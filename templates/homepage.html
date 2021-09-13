@@ -26,8 +26,6 @@
                         }
                         // translate CoinGecko API response to work with search
                         $.each(geckoResponse.items, function (index, item) {
-                            console.log(index);
-                            console.log(item);
                             var
                                 symbol = item.symbol || 'N/A',
                                 maxResults = 8
@@ -49,52 +47,6 @@
                                 url: item.html_url,
                             });
                         });
-                        return response;
-                    }
-                }
-            })
-            ;
-        $('.ui.search.category.testclass')
-            .search({
-                type: 'category',
-                minCharacters: 3,
-                apiSettings: {
-                    url: "/coin-market-cap?gecko_id={query}",
-                    onResponse: function (geckoResponse) {
-                        console.log(geckoResponse);
-                        var
-                            response = {
-                                results: {}
-                            }
-                        console.log(response);
-                        ;
-                        if (!geckoResponse || !geckoResponse.items) {
-                            return;
-                        }
-                        // translate GitHub API response to work with search
-                        $.each(geckoResponse.items, function (index, item) {
-                            var
-                                language = item.language || 'Unknown',
-                                maxResults = 8
-                                ;
-                            if (index >= maxResults) {
-                                return false;
-                            }
-                            // create new language category
-                            if (response.results[language] === undefined) {
-                                response.results[language] = {
-                                    name: language,
-                                    results: []
-                                };
-                            }
-                            // add result to category
-                            response.results[language].results.push({
-                                title: item.name,
-                                description: item.description,
-                                url: item.html_url
-                            });
-                        });
-                        console.log(response)
                         return response;
                     }
                 }
@@ -283,13 +235,6 @@
         Reset
     </button>
     <div class="ui search category">
-        <div class="ui left icon input">
-            <input class="prompt" type="text" placeholder="Search GitHub" autocomplete="off"
-                data-com.bitwarden.browser.user-edited="yes">
-            <i class="github icon"></i>
-        </div>
-    </div>
-    <div class="ui search category testclass">
         <div class="ui left icon input">
             <input class="prompt" type="text" placeholder="Search GitHub" autocomplete="off"
                 data-com.bitwarden.browser.user-edited="yes">

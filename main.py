@@ -23,6 +23,7 @@ from loguru import logger
 import sys
 import backoff
 import difflib
+from utils.data_cleaning import remove_html_tags, create_description_for_search_results
 
 logger.remove()
 logger.add(
@@ -291,6 +292,7 @@ async def get_coin_market_cap(symbol):
                 )
                 categories = ", ".join(res["categories"])
                 coin_description = res["description"]["en"]
+                coin_description = remove_html_tags(coin_description)
                 coin_description = get_first_sentence_from_string(coin_description)
 
                 logger.debug(f"categories: {categories}")
@@ -299,30 +301,36 @@ async def get_coin_market_cap(symbol):
                     f"price_change_percentage_1y: {price_change_percentage_1y}"
                 )
                 market_cap_description = (
-                    f"Market cap rank: {market_cap_rank or 'Unavailable'}"
+                    f"<b>Market cap rank:</b> {market_cap_rank}" if market_cap_rank else ""
                 )
                 coin_gecko_rank_description = (
-                    (f"<br>Coingecko rank: {coingecko_rank}") if coingecko_rank else ""
+                    (f"<b>Coingecko rank:</b> {coingecko_rank}") if coingecko_rank else ""
                 )
                 price_change_description = (
-                    (f"<br>1 year price change: {price_change_percentage_1y}%")
+                    (f"<b>1 year price change:</b> {price_change_percentage_1y}%")
                     if price_change_percentage_1y is not None
                     else ""
                 )
                 categories_description = (
-                    (f"<br>Categories: {categories}") if len(categories) != 0 else ""
+                    (f"<b>Categories:</b> {categories}") if len(categories) != 0 else ""
                 )
                 coin_description = (
-                    (f"<br><i>{coin_description}</i>") if coin_description else ""
+                    (f"<i>{coin_description}</i>") if coin_description else ""
                 )
-
-                description = (
-                    market_cap_description
-                    + coin_gecko_rank_description
-                    + price_change_description
-                    + categories_description
-                    + coin_description
+                list_of_descriptions = [
+                    coin_description,
+                    market_cap_description,
+                    coin_gecko_rank_description,
+                    price_change_description,
+                    categories_description,
+                ]
+                description = create_description_for_search_results(
+                    list_of_descriptions
                 )
+                logger.debug(list_of_descriptions)
+                logger.debug("coin_description")
+                logger.debug(coin_description)
+                logger.debug(description)
                 items.append(
                     {
                         "name": gecko_name,

@@ -327,9 +327,6 @@ async def get_coin_market_cap(symbol):
                 description = create_description_for_search_results(
                     list_of_descriptions
                 )
-                logger.debug(list_of_descriptions)
-                logger.debug("coin_description")
-                logger.debug(coin_description)
                 logger.debug(description)
                 items.append(
                     {

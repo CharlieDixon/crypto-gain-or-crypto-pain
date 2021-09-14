@@ -234,7 +234,7 @@ async def get_coin_market_cap(symbol):
             pass
     logger.debug(symbol)
 
-    matches = [coin["symbol"] for coin in gecko_coin_list if symbol in coin["symbol"]]
+
     matches = [
         {"id": coin["id"], "symbol": coin["symbol"], "name": coin["name"]}
         for coin in gecko_coin_list

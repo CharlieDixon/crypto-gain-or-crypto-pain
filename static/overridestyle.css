@@ -1,3 +1,15 @@
+body {
+    background-color: #1780a1;
+}
+
+.ui.table thead th {
+    background-color: #E9C46A
+}
+
+.ui.table {
+    background-color: #eae2b7
+}
+
 .ui.form .field>label {
     position: relative !important;
     left: 10px;

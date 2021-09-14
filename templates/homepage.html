@@ -270,8 +270,8 @@
     </thead>
     <tbody>
         {% for crypto in cryptos %}
-        <tr {% if crypto.gain==1 %} style="background-color:#fcfff5" {% endif %} {% if crypto.pain==1 %}
-            style="background-color:#fef5f6" {% endif %}>
+        <tr {% if crypto.gain==1 %} style="background-color:#57cc99" {% endif %} {% if crypto.pain==1 %}
+            style="background-color:#fe6d73" {% endif %}>
             <td>{{crypto.symbol}}</td>
             <td>
                 <div class="crypto-icons">
@@ -302,7 +302,7 @@
             {% elif crypto.pain == 1 %}
             <td style="text-align: center; vertical-align: middle;">
                 <div class="hide-value">{{crypto.percentage_change}}</div><i class="icon close"
-                    style="color:crimson"></i>
+                    style="color:#800e13"></i>
             </td>
             {% else %}
             <td style="text-align: center; vertical-align: middle;">

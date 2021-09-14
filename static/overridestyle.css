@@ -1,5 +1,5 @@
 body {
-    background-color: #1780a1;
+    background: url(/static/images/subtle-white-feathers.png) repeat 0 0;
 }
 
 .ui.table thead th {

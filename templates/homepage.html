@@ -213,41 +213,49 @@
         text-transform: uppercase;
     }
 </style>
+<div style="display: flex; justify-content: space-between; align-items:center; flex-direction:row; flex-wrap: nowrap;">
 <form>
-    <div class="ui left icon input">
+    <div class="menubar" style="display:inline-block;; margin-right:30px">
+    <div class="ui left icon input" style="box-sizing: border-box;">
         <input name="search" type="text" class="ui search icon input" id="userInput" required="required"
             placeholder="Search..." onkeyup="filterTable()" data-com.bitwarden.browser.user-edited="yes" value={{ search
             or '' }}>
         <i class="search icon"></i>
     </div>
-    <div class="ui checkbox">
+    <div class="ui checkbox" style="margin-left: 10px">
         <input name="gain" type="checkbox" name="gain" {% if gain %}checked="checked" {% endif %}>
         <label>Gain</label>
     </div>
-    <div class="ui checkbox">
+    <div class="ui checkbox" style="margin-left: 5px">
         <input name="pain" type="checkbox" name="pain" {% if pain %}checked="checked" {% endif %}>
         <label>Pain</label>
     </div>
-    <button type="submit" class="ui button primary">
+    <button type="submit" class="ui button primary" style="margin-left: 10px">
         Filter
     </button>
-    <button class="ui button">
+    <button class="ui button" style="margin-left: 5px">
         Reset
     </button>
-    <div class="ui search category">
-        <div class="ui left icon input">
-            <input class="prompt" type="text" placeholder="Search GitHub" autocomplete="off"
-                data-com.bitwarden.browser.user-edited="yes">
-            <i class="github icon"></i>
-        </div>
     </div>
 </form>
+<div class="menubar" style="flex-grow:1; margin-right: 30px">
+    <div class="ui search category">
+        <div class="ui left icon input" style="width:80%">
+            <input class="prompt" type="text" placeholder="Get info on coins" tabindex="0">
+            <i class="bitcoin icon"></i>
+        </div>
+    </div>
+</div>
+
+<div class="menubar">
 <button id="try_your_luck" class="ui animated button green" tabindex="0">
     <div class="visible content">Try your luck!</div>
     <div class="hidden content">
         <i class="right arrow icon"></i>
     </div>
+</div>
 </button>
+</div>
 
 <table class="ui celled table sorter" id="cryptoTable">
     <thead>

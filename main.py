@@ -301,10 +301,14 @@ async def get_coin_market_cap(symbol):
                     f"price_change_percentage_1y: {price_change_percentage_1y}"
                 )
                 market_cap_description = (
-                    f"<b>Market cap rank:</b> {market_cap_rank}" if market_cap_rank else ""
+                    f"<b>Market cap rank:</b> {market_cap_rank}"
+                    if market_cap_rank
+                    else ""
                 )
                 coin_gecko_rank_description = (
-                    (f"<b>Coingecko rank:</b> {coingecko_rank}") if coingecko_rank else ""
+                    (f"<b>Coingecko rank:</b> {coingecko_rank}")
+                    if coingecko_rank
+                    else ""
                 )
                 price_change_description = (
                     (f"<b>1 year price change:</b> {price_change_percentage_1y}%")

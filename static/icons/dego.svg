@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 25.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="128px" height="128px" viewBox="0 0 128 128" style="enable-background:new 0 0 128 128;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#EEF4F4;}
+	.st1{fill:#FF5173;}
+	.st2{fill:#4F4F4F;}
+	.st3{fill:#FFD766;}
+	.st4{fill:#22DC9F;}
+	.st5{fill:#787878;}
+</style>
+<circle class="st0" cx="64" cy="64" r="63"/>
+<g>
+	<rect x="31.4" y="27" class="st1" width="17.8" height="16.5"/>
+	<rect x="49.2" y="27" class="st2" width="30.9" height="16.5"/>
+	
+		<rect x="67.8" y="55.8" transform="matrix(-1.836970e-16 1 -1 -1.836970e-16 152.366 -24.366)" class="st2" width="41.1" height="16.5"/>
+	<rect x="31.4" y="84.6" class="st2" width="48.7" height="16.5"/>
+	<rect x="31.4" y="43.4" class="st3" width="17.8" height="14.6"/>
+	<rect x="31.4" y="58" class="st4" width="17.8" height="26.6"/>
+	<polygon class="st5" points="96.6,43.4 80.1,43.4 80.1,27 	"/>
+	<polygon class="st5" points="80.1,101 80.1,84.6 96.6,84.6 	"/>
+</g>
+</svg>

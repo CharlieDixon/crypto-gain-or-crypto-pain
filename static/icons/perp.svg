@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 25.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="128px" height="128px" viewBox="0 0 128 128" style="enable-background:new 0 0 128 128;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#161E39;}
+	.st1{fill-rule:evenodd;clip-rule:evenodd;fill:#3CEAAA;}
+	.st2{fill-rule:evenodd;clip-rule:evenodd;fill:#03BCE4;}
+	.st3{fill:#029ABB;}
+	.st4{opacity:0.95;fill:#3CEAAA;enable-background:new    ;}
+</style>
+<circle class="st0" cx="64" cy="64" r="63"/>
+<g>
+	<path class="st1" d="M50.8,28.5c2.6-2.6,6.8-2.6,9.4,0L82,50.3l-8.8,8.8L55.5,41.5L37.9,59.1l8.8,8.8l8.8-8.8l8.8,8.8l-8.8,8.8
+		L68.7,90c2.4,2.4,2.4,6.4,0,8.8c-2.4,2.4-6.4,2.4-8.8,0l-35-35c-2.6-2.6-2.6-6.8,0-9.4L50.8,28.5z"/>
+	<path class="st2" d="M68.4,28.5c2.6-2.6,6.8-2.6,9.4,0l25.9,25.9c2.6,2.6,2.6,6.8,0,9.4L69,98.5c-2.6,2.6-6.8,2.6-9.4,0l-4.1-4.1
+		l17.6-17.6L55.5,59.1l8.8-8.8L82,68l8.8-8.8L64.3,32.7L68.4,28.5z"/>
+	
+		<rect x="49.3" y="44.1" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -19.3184 53.9804)" class="st3" width="12.5" height="12.5"/>
+	
+		<rect x="66.9" y="44.1" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -14.1492 66.4599)" class="st4" width="12.5" height="12.5"/>
+</g>
+</svg>

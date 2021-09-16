@@ -77,8 +77,9 @@ def get_base_and_quote_assets():
     """Returns a dictionary of assets from binance API and a set containing the base assets"""
     exchange_info = client.get_exchange_info()
     for pair in exchange_info["symbols"]:
-        assets[pair["symbol"]] = pair["baseAsset"], pair["quoteAsset"]
-        set_of_base_coins.add(pair["baseAsset"])
+        if pair["status"] == "TRADING":
+            assets[pair["symbol"]] = pair["baseAsset"], pair["quoteAsset"]
+            set_of_base_coins.add(pair["baseAsset"])
 
 
 @app.on_event("startup")
@@ -87,13 +88,15 @@ async def get_all_coins():
     db = SessionLocal()
     pair_tickers = client.get_ticker()
     assets, set_of_base_coins = await get_assets()
+
     for pair in pair_tickers:
         exists = (
             db.query(Cryptocurrency)
             .filter(Cryptocurrency.symbol == pair["symbol"])
             .first()
         )
-        if not exists:
+        # check that pair exists as live trading pair
+        if not exists and assets.get(pair["symbol"]):
             crypto = Cryptocurrency()
             crypto.id = str(uuid.uuid4())
             crypto.symbol = pair["symbol"]

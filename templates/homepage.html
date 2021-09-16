@@ -321,7 +321,7 @@
 
 
 <div id="trade-form" class="window modal">
-    <form class="ui form" id="trade-form-form">
+    <form class="ui form">
         <h3>Try your luck!</h3>
         <div class="field">
             <label>Coin to buy: </label>
@@ -356,10 +356,10 @@
                     </p>
                 </div>
                 <p>
-                    <a href="close-modal" rel="modal:close">
+                    <a href="close-modal" rel="modal:close" onclick="makeDefaultText()">
                         <input type="submit" value="Nope" class="ui black deny button" style="margin-right:20px">
                     </a>
-                    <input type="submit" value="Submit trade" class="ui positive right labeled icon button">
+                    <input type="submit" value="Submit trade" class="ui positive right labeled icon button" onclick="makeDefaultText()">
                 </p>
                 <div class="ui error message"></div>
     </form>

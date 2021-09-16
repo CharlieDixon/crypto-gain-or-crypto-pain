@@ -2,6 +2,7 @@
 
 {% block content %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+<script src="static/user-interface.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
 <link rel="stylesheet" href="static/overridestyle.css" />
 <script>
@@ -218,7 +219,7 @@
 </div>
 <div style="display: flex; justify-content: space-between; align-items:center; flex-direction:row; flex-wrap: nowrap;">
     <form>
-        <div class="menubar" style="display:inline-block;; margin-right:30px">
+        <div class="menubar" style="display:inline-block;; margin-right:5px">
             <div class="ui left icon input" style="box-sizing: border-box;">
                 <input name="search" type="text" class="ui search icon input" id="userInput" required="required"
                     placeholder="Search..." onkeyup="filterTable()" value={{ search or '' }}>
@@ -235,11 +236,12 @@
             <button type="submit" class="ui button primary" style="margin-left: 10px">
                 Filter
             </button>
-            <button class="ui button" style="margin-left: 5px">
-                Reset
-            </button>
         </div>
     </form>
+            <button class="ui button" onclick=homepage() style="margin-left: 5px; margin-right:15px">
+                Reset
+            </button>
+
     <div class="menubar" style="flex-grow:1; margin-right: 30px">
         <div class="ui search category">
             <div class="ui left icon input" style="width:80%">

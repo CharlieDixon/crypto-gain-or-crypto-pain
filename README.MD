@@ -18,13 +18,11 @@ Install requirements
 ```
 pip install -r requirements.txt
 ```
-To inititate the app:
+Inititate the app:
 ```
 uvicorn main:app
 ```
 Click url link displayed in terminal or open browser at http://127.0.0.1:8000 to view searchable table.
-
-Credit to Jonas Earendel for the original JavaScript and CSS which I adapted for the sort feature: https://github.com/tofsjonas/sortable.
 
 ## Web Framework
 - `FastAPI`
@@ -35,3 +33,7 @@ Credit to Jonas Earendel for the original JavaScript and CSS which I adapted for
 ## Backend
 - `Python`
 - `SQLAlchemy with sqlite3`
+
+Credit to Jonas Earendel for the original JavaScript and CSS which I adapted for the sort feature: https://github.com/tofsjonas/sortable.
+
+Cryptocurrency icons from the excellent [Cryptoicons](https://github.com/monzanifabio/cryptoicons) project as well as from [Crypto Logos](https://cryptologos.cc/) and https://github.com/coinwink/cryptocurrency-logos.

@@ -368,7 +368,7 @@ def home(
     elif pain:
         cryptos = cryptos.filter(Cryptocurrency.pain == 1)
 
-    with open("./resources/binance_urls.txt") as json_urls:
+    with open("./resources/binance_urls.json") as json_urls:
         binance_urls = json.load(json_urls)
 
     return templates.TemplateResponse(

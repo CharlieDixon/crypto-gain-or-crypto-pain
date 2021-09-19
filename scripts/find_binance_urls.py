@@ -55,5 +55,5 @@ def get_binance_urls():
 get_trading_assets()
 create_coin_full_name_dict()
 binance_urls = get_binance_urls()
-with open("./resources/binance_urls.txt", "w") as f:
+with open("./resources/binance_urls.json", "w") as f:
     f.write(json.dumps(binance_urls))

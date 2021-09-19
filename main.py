@@ -216,6 +216,7 @@ async def get_favicon():
 
 @app.get("/coin-market-cap")
 async def get_coin_market_cap(symbol):
+    # workaround to account for mismatches between gecko and binance api symbols
     binance_gecko_mismatch = {
         "agi": "agix",
         "arn": "arnv",

@@ -28,7 +28,8 @@ a {
 }
 
 .ui.table {
-    background-color: #eae2b7
+    background-color: #eae2b7;
+    table-layout: fixed;
 }
 
 .ui.form .field>label {

@@ -284,7 +284,11 @@
                     <img src="/static/icons/{{crypto.base_asset}}.svg" width="16" height="16" alt="" />
                     {% else %} <img src="/static/icons/generic.svg" width="16" height="16" alt="" />
                     {% endif %}
+                    {% if crypto.base_asset in binance_urls %}
+                    <a href="{{binance_urls[crypto.base_asset]}}">{{crypto.base_asset}}</a>
+                    {% else %}
                     {{crypto.base_asset}}
+                    {% endif %}
                 </div>
             </td>
             <td>
@@ -293,7 +297,11 @@
                     <img src="/static/icons/{{crypto.quote_asset}}.svg" width="16" height="16" alt="" />
                     {% else %} <img src="/static/icons/generic.svg" width="16" height="16" alt="" />
                     {% endif %}
+                    {% if crypto.quote_asset in binance_urls %}
+                    <a href="{{binance_urls[crypto.quote_asset]}}">{{crypto.quote_asset}}</a>
+                    {% else %}
                     {{crypto.quote_asset}}
+                    {% endif %}
                 </div>
             </td>
             <td>{{crypto.price}}</td>

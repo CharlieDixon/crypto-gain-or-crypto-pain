@@ -21,6 +21,7 @@ from starlette.responses import FileResponse
 from collections import defaultdict
 from loguru import logger
 import sys
+import json
 import backoff
 import difflib
 from utils.data_cleaning import remove_html_tags, create_description_for_search_results
@@ -366,6 +367,9 @@ def home(
     elif pain:
         cryptos = cryptos.filter(Cryptocurrency.pain == 1)
 
+    with open("./resources/binance_urls.txt") as json_urls:
+        binance_urls = json.load(json_urls)
+
     return templates.TemplateResponse(
         "homepage.html",
         {
@@ -376,6 +380,7 @@ def home(
             "pain": pain,
             "set_of_base_coins": sorted(set_of_base_coins),
             "svg_icons": svg_icon_codes,
+            "binance_urls": binance_urls,
         },
     )
 

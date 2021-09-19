@@ -57,6 +57,3 @@ create_coin_full_name_dict()
 binance_urls = get_binance_urls()
 with open("./resources/binance_urls.txt", "w") as f:
     f.write(json.dumps(binance_urls))
-
-# with open("./resources/binance_urls.txt") as json_file:
-#     binance_urls = json.loads(json_file.read())

@@ -1,6 +1,8 @@
 body {
-    background: url(/static/images/backgrounds/subtle-white-feathers.png) repeat 0 0;
+    background-color: #ffffff;
+    background: url(/static/images/backgrounds/brickwall.png) repeat 0 0;
 }
+
 
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Corben', Georgia, Times, serif;
@@ -30,6 +32,7 @@ a {
 .ui.table {
     background-color: #eae2b7;
     table-layout: fixed;
+    overflow-wrap: break-word;
 }
 
 .ui.form .field>label {

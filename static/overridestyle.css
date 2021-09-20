@@ -1,5 +1,4 @@
 body {
-    background-color: #ffffff;
     background: url(/static/images/backgrounds/brickwall.png) repeat 0 0;
 }
 
@@ -33,6 +32,10 @@ a {
     background-color: #eae2b7;
     table-layout: fixed;
     overflow-wrap: break-word;
+}
+
+.ui.table td {
+    background-color: cornsilk;
 }
 
 .ui.form .field>label {

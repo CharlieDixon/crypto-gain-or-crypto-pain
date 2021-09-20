@@ -12,7 +12,6 @@
                 type: 'category',
                 minCharacters: 3,
                 apiSettings: {
-                    // url: '//api.github.com/search/repositories?q={query}"',
                     url: '/coin-market-cap?symbol={query}"',
                     onResponse: function (geckoResponse) {
                         console.log(geckoResponse);
@@ -284,7 +283,7 @@
                     {% else %} <img src="/static/icons/generic.svg" width="16" height="16" alt="" />
                     {% endif %}
                     {% if crypto.base_asset in binance_urls %}
-                    <a href="{{binance_urls[crypto.base_asset]}}">{{crypto.base_asset}}</a>
+                    <a href="{{binance_urls[crypto.base_asset]}}" target="_blank">{{crypto.base_asset}}</a>
                     {% else %}
                     {{crypto.base_asset}}
                     {% endif %}
@@ -297,7 +296,7 @@
                     {% else %} <img src="/static/icons/generic.svg" width="16" height="16" alt="" />
                     {% endif %}
                     {% if crypto.quote_asset in binance_urls %}
-                    <a href="{{binance_urls[crypto.quote_asset]}}">{{crypto.quote_asset}}</a>
+                    <a href="{{binance_urls[crypto.quote_asset]}}" target="_blank">{{crypto.quote_asset}}</a>
                     {% else %}
                     {{crypto.quote_asset}}
                     {% endif %}

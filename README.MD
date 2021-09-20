@@ -1,5 +1,10 @@
 # <p align="center">Welcome to crypto gain or crypto pain!</p>
-Ever wanted to see how cryptocurrencies are faring against each other? Look no further. Crypto gain or crypto pain allows you to see the exchange rates of all cryptocurrency trading pairs listed on binance and the degree to which this has changed in the past 24hrs.
+<p align="center">
+  <img src="static/images/increase.svg" width="20%", height="auto" />
+  <!-- Icon from user Freepik at Flaticon -->
+</p>
+
+Ever wanted to see how cryptocurrencies are faring against each other? Look no further. Crypto gain or crypto pain allows you to see the exchange rates of all cryptocurrency trading pairs listed on [Binance](binance.com) and the degree to which this has changed in the past 24hrs.
 
 ## How it works
 Provides an API with a frontend user interface for querying the past 24hrs of data on cryptocurrency trading pairs from binance. The data is fetched through binance's API and is hosted on a local sqlite database generated/updated on app startup. It shows price changes for trading pairs and indicates winners and losers in the past 24hrs (+/- 5% price change). Data is sortable and can be filtered by user input.

@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="static/image-overlay.css" />
+<link rel="stylesheet" href="static/overridestyle.css" />
+<body class="split">
+    <div class="split left">
+    <div class="main-title">
+        <h2>Crypto gain or crypto pain</h2>
+    </div>
+    <div class="img-overlay-wrap">
+    <img src="static/images/crash.svg" width=500px>
+    <svg viewBox="0 0 200 200" id="base-svg">
+        <svg x="15%" y="26%">
+            <image width="20" xlink:href="static/icons/{{svg_base}}.svg" />
+        </svg>
+        <svg x="24%" y="24%">
+            <image id="quote-svg" width="15" xlink:href="static/icons/{{svg_quote}}.svg" />
+        </svg>
+    </svg>
+    </div>
+</div>
+<div class="split right">
+    <h2>Your worst trade</h2>
+</div>
+</body>
+
+{% endblock %}

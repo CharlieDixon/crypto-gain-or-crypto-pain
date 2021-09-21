@@ -437,13 +437,17 @@ def limit_dropdown(
 def overlay_svgs(request: Request, db: Session = Depends(get_db)):
     
     return templates.TemplateResponse(
-        "trading-results.html",
+        "image-overlay.html",
         {
             "request": request,
-            "svg_base": "btc.svg",
-            "svg_quote": "eth.svg",
+            "svg_base": "btc",
+            "svg_quote": "doge",
             
         },
     )
     # pseudocode
-    # return worst_trade
+    # get last trade
+    # assign base and quote assets of that trade
+    # fetch relevant svgs
+    # return via jinja template
+    # separate page for worst_trade?

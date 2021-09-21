@@ -1,0 +1,39 @@
+.img-overlay-wrap {
+    position: relative;
+    display: inline-block; /* <= shrinks container to image size */
+    transition: transform 150ms ease-in-out;
+    margin-left: 10%
+  }
+  
+  .img-overlay-wrap img { /* <= optional, for responsiveness */
+     display: block;
+     max-width: 100%;
+     height: auto;
+  }
+
+  #base-svg {
+    position: absolute;
+    top: 10%;
+    left: 0;
+  }
+
+
+  .split {
+    height: 100%;
+    width: 50%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    overflow-x: hidden;
+    padding-top: 20px;
+  }
+
+.left {
+  left: 0;
+  overflow: hidden;
+}
+
+.right {
+  right: 0;
+  background-color: red;
+}

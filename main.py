@@ -432,3 +432,18 @@ def limit_dropdown(
         coin_dict[base].append(quote)
     if c2b:
         return coin_dict.get(c2b)
+
+@app.get("/results")
+def overlay_svgs(request: Request, db: Session = Depends(get_db)):
+    
+    return templates.TemplateResponse(
+        "trading-results.html",
+        {
+            "request": request,
+            "svg_base": "btc.svg",
+            "svg_quote": "eth.svg",
+            
+        },
+    )
+    # pseudocode
+    # return worst_trade

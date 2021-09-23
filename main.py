@@ -15,7 +15,11 @@ import configparser
 from binance import Client
 import uuid
 import httpx
-from resources.currency_info import currency_codes, svg_icon_codes
+from resources.currency_info import (
+    currency_codes,
+    svg_icon_codes,
+    alt_colours_for_graphs,
+)
 from forex_python.converter import CurrencyRates
 from starlette.responses import FileResponse
 from collections import defaultdict
@@ -24,6 +28,7 @@ import sys
 import json
 import backoff
 import difflib
+import random
 from utils.data_cleaning import remove_html_tags, create_description_for_search_results
 
 logger.remove()
@@ -241,7 +246,6 @@ async def get_coin_market_cap(symbol):
             pass
     logger.debug(symbol)
 
-
     matches = [
         {"id": coin["id"], "symbol": coin["symbol"], "name": coin["name"]}
         for coin in gecko_coin_list
@@ -435,16 +439,16 @@ def limit_dropdown(
     if c2b:
         return coin_dict.get(c2b)
 
+
 @app.get("/results")
 def overlay_svgs(request: Request, db: Session = Depends(get_db)):
-    
+
     return templates.TemplateResponse(
         "image-overlay.html",
         {
             "request": request,
             "svg_base": "btc",
             "svg_quote": "doge",
-            
         },
     )
     # pseudocode
@@ -453,7 +457,8 @@ def overlay_svgs(request: Request, db: Session = Depends(get_db)):
     # fetch relevant svgs
     # return via jinja template
     # separate page for worst_trade?
-    
+
+
 @app.get("/analysis")
 def analysis(request: Request, db: Session = Depends(get_db)):
     profit_on_coin = {}
@@ -464,17 +469,31 @@ def analysis(request: Request, db: Session = Depends(get_db)):
             profit_on_coin[coin] += float(profit)
         else:
             profit_on_coin[coin] = float(profit)
-    ordered_by_profit = {k: v for k, v in sorted(profit_on_coin.items(), key=lambda item: item[1], reverse=True)}
+    ordered_by_profit = {
+        k: v
+        for k, v in sorted(
+            profit_on_coin.items(), key=lambda item: item[1], reverse=True
+        )
+    }
     coin_order = [coin for coin in ordered_by_profit.keys()]
     profit_order = [value for value in ordered_by_profit.values()]
 
-    
+    with open("./resources/crypto-colours.json") as colours:
+        colour_dict = json.load(colours)
+
+    colour_order = []
+    for coin in coin_order:
+        if colour_dict.get(coin):
+            colour_order.append(colour_dict.get(coin))
+        else:
+            colour_order.append(random.choice(alt_colours_for_graphs))
+
     return templates.TemplateResponse(
         "analysis.html",
         {
             "request": request,
             "coin_order": json.dumps(coin_order),
-            "profit_order": json.dumps(profit_order)
-            
+            "profit_order": json.dumps(profit_order),
+            "colour_order": json.dumps(colour_order),
         },
     )

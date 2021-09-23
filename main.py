@@ -487,8 +487,7 @@ def analysis(request: Request, db: Session = Depends(get_db)):
     total_lost = str(round(sum(losses_ordered),2)).replace("-", "$")
     total = "$" + str(round(sum(profits_ordered + losses_ordered)))
     highest_earner_coin, highest_earner_amount = profitable_coins_ordered[0], "$" + str(profits_ordered[0])
-    biggest_burner_coin, biggest_burner_amount = loss_coins_ordered[-1], str(losses_ordered[0]).replace("-","$")
-
+    biggest_burner_coin, biggest_burner_amount = loss_coins_ordered[-1], str(losses_ordered[-1]).replace("-","$")
     
     with open("./resources/crypto-colours.json") as colours:
         colour_dict = json.load(colours)

@@ -29,7 +29,7 @@ import json
 import backoff
 import difflib
 import random
-from utils.data_cleaning import remove_html_tags, create_description_for_search_results
+from utils.data_cleaning import remove_html_tags, create_description_for_search_results, determine_colour
 
 logger.remove()
 logger.add(
@@ -475,25 +475,29 @@ def analysis(request: Request, db: Session = Depends(get_db)):
             profit_on_coin.items(), key=lambda item: item[1], reverse=True
         )
     }
-    coin_order = [coin for coin in ordered_by_profit.keys()]
-    profit_order = [value for value in ordered_by_profit.values()]
+    profit_coins = {k: v for k, v in ordered_by_profit.items() if v >= 0}
+    loss_coins = {k: v for k, v in ordered_by_profit.items() if v < 0}
+
+    profitable_coins_ordered = [coin for coin in profit_coins.keys()]
+    profits_ordered = [round(value, 2) for value in profit_coins.values()]
+    loss_coins_ordered = [coin for coin in loss_coins.keys()]
+    losses_ordered = [round(value, 2) for value in loss_coins.values()]
 
     with open("./resources/crypto-colours.json") as colours:
         colour_dict = json.load(colours)
 
-    colour_order = []
-    for coin in coin_order:
-        if colour_dict.get(coin):
-            colour_order.append(colour_dict.get(coin))
-        else:
-            colour_order.append(random.choice(alt_colours_for_graphs))
+    profitable_colour_order = determine_colour(profitable_coins_ordered, colour_dict, alt_colours_for_graphs)
+    loss_colour_order = determine_colour(loss_coins_ordered, colour_dict, alt_colours_for_graphs)
 
     return templates.TemplateResponse(
         "analysis.html",
         {
             "request": request,
-            "coin_order": json.dumps(coin_order),
-            "profit_order": json.dumps(profit_order),
-            "colour_order": json.dumps(colour_order),
+            "profitable_coins": json.dumps(profitable_coins_ordered),
+            "profits_ordered": json.dumps(profits_ordered),
+            "profitable_colour_order": json.dumps(profitable_colour_order),
+            "loss_coins": json.dumps(loss_coins_ordered),
+            "losses_ordered": json.dumps(losses_ordered),
+            "loss_colour_order": json.dumps(loss_colour_order),
         },
     )

@@ -485,7 +485,14 @@ def analysis(request: Request, db: Session = Depends(get_db)):
 
     total_gained = "$" + str(round(sum(profits_ordered),2))
     total_lost = str(round(sum(losses_ordered),2)).replace("-", "$")
-    total = "$" + str(round(sum(profits_ordered + losses_ordered)))
+    total = sum(profits_ordered + losses_ordered)
+    if total < 0: 
+        prof_or_loss = "lost"
+        total = "$" + str(abs(round(total,2)))
+    else:
+        prof_or_loss = "gained"
+        total = "$" + str(round(total,2))
+    
     highest_earner_coin, highest_earner_amount = profitable_coins_ordered[0], "$" + str(profits_ordered[0])
     biggest_burner_coin, biggest_burner_amount = loss_coins_ordered[-1], str(losses_ordered[-1]).replace("-","$")
     
@@ -507,6 +514,7 @@ def analysis(request: Request, db: Session = Depends(get_db)):
             "loss_colour_order": json.dumps(loss_colour_order),
             "total_gained": total_gained,
             "total_lost": total_lost,
+            "prof_or_loss": prof_or_loss,
             "total": total,
             "highest_earner_coin": highest_earner_coin,
             "highest_earner_amount": highest_earner_amount,

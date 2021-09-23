@@ -3,26 +3,39 @@
 {% block content %}
 <link rel="stylesheet" href="static/image-overlay.css" />
 <link rel="stylesheet" href="static/overridestyle.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <body class="split">
     <div class="split left">
-    <div class="main-title">
-        <h2>Crypto gain or crypto pain</h2>
+        <div class="main-title">
+            <h2>Crypto gain or crypto pain</h2>
+        </div>
+        <div class="img-overlay-wrap">
+            <img src="static/images/crash.svg" width=500px>
+            <svg viewBox="0 0 200 200" id="base-svg">
+                <svg x="15%" y="26%">
+                    <image width="20" xlink:href="static/icons/{{svg_base}}.svg" />
+                </svg>
+                <svg x="24%" y="24%">
+                    <image id="quote-svg" width="15" xlink:href="static/icons/{{svg_quote}}.svg" />
+                </svg>
+            </svg>
+        </div>
     </div>
-    <div class="img-overlay-wrap">
-    <img src="static/images/crash.svg" width=500px>
-    <svg viewBox="0 0 200 200" id="base-svg">
-        <svg x="15%" y="26%">
-            <image width="20" xlink:href="static/icons/{{svg_base}}.svg" />
-        </svg>
-        <svg x="24%" y="24%">
-            <image id="quote-svg" width="15" xlink:href="static/icons/{{svg_quote}}.svg" />
-        </svg>
-    </svg>
+    <div class="split right">
+        <div class="main-title">
+            <h2>Your worst trade</h2>
+        </div>
+        <div style="text-align: center;">
+            Unfortunately you lost X amount by trading Y amount of ETH for BTC.
+            <br>
+            Click here for a more detailed breakdown of your trade history.
+        </div>
+        <div>
+            <canvas id="myChart" width="400" height="400"></canvas>
+        </div>
     </div>
-</div>
-<div class="split right">
-    <h2>Your worst trade</h2>
-</div>
 </body>
+
 
 {% endblock %}

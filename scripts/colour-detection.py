@@ -11,13 +11,13 @@ filelist = [f for f in listdir("pngs") if isfile(join("pngs", f))]
 
 def rgb_to_hex(rgb):
     r, g, b = rgb
-    return ("#{:X}{:X}{:X}").format(r, g, b)
+    return "#{:02x}{:02x}{:02x}".format(r, g, b)
 
 
 colours = {}
 for coin in filelist:
     color_thief = ColorThief("pngs/" + coin)
-    dominant_colour = color_thief.get_color(quality=1)
+    dominant_colour = color_thief.get_color()
     hex_colour = rgb_to_hex(dominant_colour)
     coin_name = coin.replace(".png", "").upper()
     colours[coin_name] = hex_colour

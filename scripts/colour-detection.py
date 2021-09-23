@@ -19,7 +19,7 @@ for coin in filelist:
     color_thief = ColorThief("pngs/" + coin)
     dominant_colour = color_thief.get_color(quality=1)
     hex_colour = rgb_to_hex(dominant_colour)
-    coin_name = coin.rstrip(".png").upper()
+    coin_name = coin.replace(".png", "").upper()
     colours[coin_name] = hex_colour
 
 json_file = open("../resources/crypto-colours.json", "w")

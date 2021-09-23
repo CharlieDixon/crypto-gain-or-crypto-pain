@@ -2,36 +2,68 @@
 
 {% block content %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="static/split-screen.css" />
+<link rel="stylesheet" href="static/overridestyle.css" />
 
-<body>
-    <div>
-        <canvas id="myChart" width="400" height="400"></canvas>
+<body class="split">
+    <div class="split left">
+        <div class="main-title">
+            <h2>Winners</h2>
+        </div>
+        <div>
+            <canvas id="bestPie" width="400" height="400"></canvas>
+        </div>
+    </div>
+    <div class="split right">
+        <div class="main-title">
+            <h2>Losers</h2>
+        </div>
+        <div>
+            <canvas id="worstPie" width="400" height="400"></canvas>
+        </div>
     </div>
 
 </body>
 <script type="text/javascript">
-   
-    const data = {
-        labels: {{ coin_order|safe }},
-        datasets: [{
-            label: 'Trade Summary',
-            data: {{ profit_order|safe }},
-            backgroundColor: [
-                'rgb(255, 99, 132)',
-                'rgb(54, 162, 235)',
-                'rgb(255, 205, 86)'
-            ],
-            hoverOffset: 4
+
+    const profitData = {
+        labels: {{ profitable_coins| safe }},
+    datasets: [{
+        label: 'Trade Summary',
+        data: {{ profits_ordered| safe }},
+        backgroundColor: {{ profitable_colour_order| safe }},
+        hoverOffset: 4
         }]
     };
-    const config = {
+    const profitConfig = {
         type: 'pie',
-        data: data,
-        options: {maintainAspectRatio: false}
+        data: profitData,
+        options: { maintainAspectRatio: false }
     };
-    var myChart = new Chart(
-        document.getElementById('myChart'),
-        config
+    var bestPie = new Chart(
+        document.getElementById('bestPie'),
+        profitConfig
+    );
+</script>
+<script type="text/javascript">
+
+    const lossData = {
+        labels: {{ loss_coins| safe }},
+    datasets: [{
+        label: 'Trade Summary',
+        data: {{ losses_ordered| safe }},
+        backgroundColor: {{ loss_colour_order| safe }},
+        hoverOffset: 4
+        }]
+    };
+    const lossConfig = {
+        type: 'pie',
+        data: lossData,
+        options: { maintainAspectRatio: false }
+    };
+    var worstPie = new Chart(
+        document.getElementById('worstPie'),
+        lossConfig
     );
 </script>
 {% endblock %}

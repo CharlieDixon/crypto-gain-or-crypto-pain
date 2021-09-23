@@ -11,7 +11,7 @@ filelist = [f for f in listdir("pngs") if isfile(join("pngs", f))]
 
 def rgb_to_hex(rgb):
     r, g, b = rgb
-    return ("{:X}{:X}{:X}").format(r, g, b)
+    return ("#{:X}{:X}{:X}").format(r, g, b)
 
 
 colours = {}
@@ -22,6 +22,6 @@ for coin in filelist:
     coin_name = coin.rstrip(".png").upper()
     colours[coin_name] = hex_colour
 
-json_file = open("resources/crypto-colours.json", "w")
+json_file = open("../resources/crypto-colours.json", "w")
 json.dump(colours, json_file)
 json_file.close()

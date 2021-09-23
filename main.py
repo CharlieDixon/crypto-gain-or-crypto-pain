@@ -483,6 +483,13 @@ def analysis(request: Request, db: Session = Depends(get_db)):
     loss_coins_ordered = [coin for coin in loss_coins.keys()]
     losses_ordered = [round(value, 2) for value in loss_coins.values()]
 
+    total_gained = "$" + str(round(sum(profits_ordered),2))
+    total_lost = str(round(sum(losses_ordered),2)).replace("-", "$")
+    total = "$" + str(round(sum(profits_ordered + losses_ordered)))
+    highest_earner_coin, highest_earner_amount = profitable_coins_ordered[0], "$" + str(profits_ordered[0])
+    biggest_burner_coin, biggest_burner_amount = loss_coins_ordered[-1], str(losses_ordered[0]).replace("-","$")
+
+    
     with open("./resources/crypto-colours.json") as colours:
         colour_dict = json.load(colours)
 
@@ -499,5 +506,13 @@ def analysis(request: Request, db: Session = Depends(get_db)):
             "loss_coins": json.dumps(loss_coins_ordered),
             "losses_ordered": json.dumps(losses_ordered),
             "loss_colour_order": json.dumps(loss_colour_order),
+            "total_gained": total_gained,
+            "total_lost": total_lost,
+            "total": total,
+            "highest_earner_coin": highest_earner_coin,
+            "highest_earner_amount": highest_earner_amount,
+            "biggest_burner_coin": biggest_burner_coin,
+            "biggest_burner_amount": biggest_burner_amount,
+
         },
     )

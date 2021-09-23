@@ -4,6 +4,15 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <link rel="stylesheet" href="static/split-screen.css" />
 <link rel="stylesheet" href="static/overridestyle.css" />
+<style type="text/css">
+    .left {
+        padding-left: 10%
+    }
+
+    .right {
+        padding-right: 10%
+    }
+</style>
 
 <body class="split">
     <div class="split left">
@@ -11,7 +20,12 @@
             <h2>Winners</h2>
         </div>
         <div>
-            <canvas id="bestPie" width="400" height="400"></canvas>
+            <canvas id="bestPie" width="420" height="420"></canvas>
+        </div>
+        <div>
+            <h4 style="text-align:center; margin-top: 20px; line-height: 1.8em;">You've gained {{total_gained}} through
+                savvy trades, with your highest earner, {{highest_earner_coin}}, adding {{highest_earner_amount}} to
+                your balance.</h4>
         </div>
     </div>
     <div class="split right">
@@ -19,13 +33,16 @@
             <h2>Losers</h2>
         </div>
         <div>
-            <canvas id="worstPie" width="400" height="400"></canvas>
+            <canvas id="worstPie" width="420" height="420"></canvas>
+        </div>
+        <div>
+            <h4 style="text-align:center; margin-top: 20px; line-height: 1.8em;">You've racked up {{total_lost}} in
+                losses, with {{biggest_burner_coin}} alone burning a {{biggest_burner_amount}} hole in your wallet</h4>
         </div>
     </div>
-
 </body>
-<script type="text/javascript">
 
+<script type="text/javascript">
     const profitData = {
         labels: {{ profitable_coins| safe }},
     datasets: [{

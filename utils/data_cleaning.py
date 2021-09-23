@@ -1,5 +1,5 @@
 import re
-
+import random
 
 def remove_html_tags(raw_html):
     cleanr = re.compile("<.*?>")
@@ -16,3 +16,12 @@ def create_description_for_search_results(list_of_descriptions: list) -> str:
         description += item if counter == 0 else "<br>" + item
         counter += 1
     return description
+
+def determine_colour(coin_order, colour_dict, alt_colours_for_graphs):
+        colour_order = []
+        for coin in coin_order:
+            if colour_dict.get(coin):
+                colour_order.append(colour_dict.get(coin))
+            else:
+                colour_order.append(random.choice(alt_colours_for_graphs))
+        return colour_order

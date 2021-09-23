@@ -216,6 +216,8 @@ async def get_favicon():
 
 @app.get("/coin-market-cap")
 async def get_coin_market_cap(symbol):
+    # ! Split into several functions
+    # todo Docstring
     # workaround to account for mismatches between gecko and binance api symbols
     binance_gecko_mismatch = {
         "agi": "agix",
@@ -451,3 +453,20 @@ def overlay_svgs(request: Request, db: Session = Depends(get_db)):
     # fetch relevant svgs
     # return via jinja template
     # separate page for worst_trade?
+    
+@app.get("/analysis")
+def analysis(request: Request, db: Session = Depends(get_db)):
+    
+    
+    
+    
+    
+    return templates.TemplateResponse(
+        "analysis.html",
+        {
+            "request": request,
+            "svg_base": "btc",
+            "svg_quote": "doge",
+            
+        },
+    )

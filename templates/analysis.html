@@ -15,7 +15,12 @@
 </style>
 
 <body class="split">
-    <div class="split left">
+    <div style="position: relative; left: 72%; margin-top: 2.5%">
+        <span>
+        <h2>In total, you've {{prof_or_loss}} {{total}}</h2>
+        </span>
+    </div>
+    <div class="split left" style="margin-top:4%;">
         <div class="main-title">
             <h2>Winners</h2>
         </div>
@@ -23,12 +28,12 @@
             <canvas id="bestPie" width="420" height="420"></canvas>
         </div>
         <div>
-            <h4 style="text-align:center; margin-top: 20px; line-height: 1.8em;">You've gained {{total_gained}} through
-                savvy trades, with your highest earner, {{highest_earner_coin}}, adding {{highest_earner_amount}} to
-                your balance.</h4>
+            <h4 style="text-align:center; margin-top: 20px; line-height: 1.8em;">
+                Through savvy trades, you've gained {{total_gained}}, with your highest earner, {{highest_earner_coin}},
+                 adding {{highest_earner_amount}} to your balance.</h4>
         </div>
     </div>
-    <div class="split right">
+    <div class="split right" style="margin-top:4%;">
         <div class="main-title">
             <h2>Losers</h2>
         </div>

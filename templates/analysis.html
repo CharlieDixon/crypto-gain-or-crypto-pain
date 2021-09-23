@@ -9,16 +9,13 @@
     </div>
 
 </body>
-<script>
+<script type="text/javascript">
+   
     const data = {
-        labels: [
-            'Red',
-            'Blue',
-            'Yellow'
-        ],
+        labels: {{ coin_order|safe }},
         datasets: [{
-            label: 'My First Dataset',
-            data: [300, 50, 100],
+            label: 'Trade Summary',
+            data: {{ profit_order|safe }},
             backgroundColor: [
                 'rgb(255, 99, 132)',
                 'rgb(54, 162, 235)',

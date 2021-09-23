@@ -456,17 +456,25 @@ def overlay_svgs(request: Request, db: Session = Depends(get_db)):
     
 @app.get("/analysis")
 def analysis(request: Request, db: Session = Depends(get_db)):
-    
-    
-    
-    
+    profit_on_coin = {}
+    trades = db.query(Trades.base_asset, Trades.gain_or_pain_in_dollars)
+    # add up values where base asset is the same
+    for coin, profit in trades:
+        if coin in profit_on_coin:
+            profit_on_coin[coin] += float(profit)
+        else:
+            profit_on_coin[coin] = float(profit)
+    ordered_by_profit = {k: v for k, v in sorted(profit_on_coin.items(), key=lambda item: item[1], reverse=True)}
+    coin_order = [coin for coin in ordered_by_profit.keys()]
+    profit_order = [value for value in ordered_by_profit.values()]
+
     
     return templates.TemplateResponse(
         "analysis.html",
         {
             "request": request,
-            "svg_base": "btc",
-            "svg_quote": "doge",
+            "coin_order": json.dumps(coin_order),
+            "profit_order": json.dumps(profit_order)
             
         },
     )

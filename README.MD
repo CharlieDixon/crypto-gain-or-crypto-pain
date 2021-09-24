@@ -29,9 +29,13 @@ Install requirements
 ```
 pip install -r requirements.txt
 ```
-Inititate the app:
+Inititate the app via the command line:
 ```
 uvicorn main:app
+```
+Or directly with python:
+```
+python main.py
 ```
 Click url link displayed in terminal or open browser at http://127.0.0.1:8000 to view searchable table.
 

@@ -124,7 +124,8 @@ async def get_all_coins():
 
 @app.on_event("startup")
 @backoff.on_predicate(backoff.constant, interval=5, max_tries=8)
-def get_gecko_coin_list():
+def get_gecko_coin_list() -> list:
+    """Retrieves and returns list of coins from gecko api, retries if unsuccessful."""
     global gecko_coin_list
     try:
         res = httpx.get("https://api.coingecko.com/api/v3/coins/list", timeout=10)
@@ -143,7 +144,11 @@ def get_gecko_coin_list():
     return gecko_coin_list
 
 
-def get_first_sentence_from_string(sentence):
+def get_first_sentence_from_string(sentence) -> str:
+    """
+    Returns string containing the first sentence.
+    Uses first fullstop as best approximation of where first sentence ends.
+    """
     if isinstance(sentence, str):
         index = sentence.find(".")
         if index != -1:
@@ -368,6 +373,19 @@ async def get_coin_market_cap(symbol):
 def home(
     request: Request, search=None, gain=None, pain=None, db: Session = Depends(get_db)
 ):
+    """
+    Homepage containing table of cryptocurrency information stored in Cryptocurrency sql db with ui interface features for filtering results.
+
+    Args:
+        request (Request): necessary for jinja response
+        search ([type], optional): Any text entered into search field by user. Defaults to None.
+        gain ([type], optional): Indicates whether gain checkbox is ticked. Defaults to None.
+        pain ([type], optional): Indicates whether pain checkbox is ticked. Defaults to None.
+        db (Session, optional): Local sql database. Defaults to Depends(get_db).
+
+    Returns:
+        Jinja2 template
+    """
     cryptos = db.query(Cryptocurrency)
 
     if search:
@@ -422,6 +440,7 @@ def user_gain_or_pain(
 
 @app.get("/trade-db")
 def trade_db():
+    """Returns details of last trade made i.e. last entry to Trades db"""
     # gets last db entry i.e. last trade submitted: change to use IDs
     with SessionLocal() as session:
         last_trade = session.query(Trades).order_by(Trades.id.desc()).first()
@@ -442,7 +461,8 @@ def trade_db():
 @app.get("/limit-dropdown")
 def limit_dropdown(
     c2b=None,
-):
+) -> list:
+    """If user changes value in coin-to-buy dropdown, returns a list of available trading pairs for the selected coin."""
     coin_dict = defaultdict(list)
     for base, quote in assets.values():
         coin_dict[base].append(quote)
@@ -456,7 +476,7 @@ def overlay_svgs(request: Request, db: Session = Depends(get_db)):
     Page displaying the worst trade the user has made and how much it cost them along with a graphic overlay.
 
     Args:
-        request (Request): [description]
+        request (Request): Starlette class necessary for jinja templating response.
         db (Session, optional): creates db session. Defaults to Depends(get_db).
 
     Returns:

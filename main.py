@@ -29,7 +29,12 @@ import json
 import backoff
 import difflib
 import random
-from utils.data_cleaning import remove_html_tags, create_description_for_search_results, determine_colour
+from utils.data_cleaning import (
+    remove_html_tags,
+    create_description_for_search_results,
+    determine_colour,
+    worst_trade,
+)
 
 logger.remove()
 logger.add(
@@ -188,19 +193,24 @@ def fetch_crypto_data(id: int, user_amount: float, symbol: str):
         after_trade = before_trade
     else:
         after_trade = before_trade + (percentage_change_for_pair / 100 * before_trade)
-    global gecko_coin_list
-    if row._mapping[Cryptocurrency].quote_asset.upper() in currency_codes:
-        exchange = CurrencyRates()
-        value_of_coin_in_dollars = exchange.get_rate(
-            row._mapping[Cryptocurrency].quote_asset.upper(), "USD"
-        )
-    else:
-        gecko_id, symb, name = [
-            coin
-            for coin in gecko_coin_list
-            if coin["symbol"] == row._mapping[Cryptocurrency].quote_asset.lower()
-        ][0].values()
-        value_of_coin_in_dollars = convert_to_dollars(gecko_id)
+
+    def exchange_rate(table):
+        global gecko_coin_list
+        if row._mapping[table].quote_asset.upper() in currency_codes:
+            exchange = CurrencyRates()
+            value_of_coin_in_dollars = exchange.get_rate(
+                row._mapping[table].quote_asset.upper(), "USD"
+            )
+        else:
+            gecko_id, symb, name = [
+                coin
+                for coin in gecko_coin_list
+                if coin["symbol"] == row._mapping[table].quote_asset.lower()
+            ][0].values()
+            value_of_coin_in_dollars = convert_to_dollars(gecko_id)
+        return value_of_coin_in_dollars
+
+    value_of_coin_in_dollars = exchange_rate(Cryptocurrency)
 
     before_trade_in_dollars = before_trade * value_of_coin_in_dollars
     after_trade_in_dollars = after_trade * value_of_coin_in_dollars
@@ -440,23 +450,41 @@ def limit_dropdown(
         return coin_dict.get(c2b)
 
 
-@app.get("/results")
+@app.get("/worst")
 def overlay_svgs(request: Request, db: Session = Depends(get_db)):
+    """
+    Page displaying the worst trade the user has made and how much it cost them along with a graphic overlay.
+
+    Args:
+        request (Request): [description]
+        db (Session, optional): creates db session. Defaults to Depends(get_db).
+
+    Returns:
+        TemplateResponse: Jinja2 template to show html content with values on worst trade passed.
+    """
+    trades = db.query(
+        Trades.base_asset, Trades.quote_asset, Trades.gain_or_pain_in_dollars
+    )
+    worst_coin, worst_coin_quote, worst_loss, unformatted_worst_loss = worst_trade(
+        trades
+    )
+    before_trade_in_dollars = (
+        "$"
+        + db.query(Trades.before_trade_in_dollars)
+        .where(Trades.gain_or_pain_in_dollars == unformatted_worst_loss)
+        .scalar()
+    )
 
     return templates.TemplateResponse(
         "image-overlay.html",
         {
             "request": request,
-            "svg_base": "btc",
-            "svg_quote": "doge",
+            "svg_base": worst_coin,
+            "svg_quote": worst_coin_quote,
+            "before_trade_dollars": before_trade_in_dollars,
+            "worst_loss": worst_loss.replace("-", "$"),
         },
     )
-    # pseudocode
-    # get last trade
-    # assign base and quote assets of that trade
-    # fetch relevant svgs
-    # return via jinja template
-    # separate page for worst_trade?
 
 
 @app.get("/analysis")
@@ -483,24 +511,32 @@ def analysis(request: Request, db: Session = Depends(get_db)):
     loss_coins_ordered = [coin for coin in loss_coins.keys()]
     losses_ordered = [round(value, 2) for value in loss_coins.values()]
 
-    total_gained = "$" + str(round(sum(profits_ordered),2))
-    total_lost = str(round(sum(losses_ordered),2)).replace("-", "$")
+    total_gained = "$" + str(round(sum(profits_ordered), 2))
+    total_lost = str(round(sum(losses_ordered), 2)).replace("-", "$")
     total = sum(profits_ordered + losses_ordered)
-    if total < 0: 
+    if total < 0:
         prof_or_loss = "lost"
-        total = "$" + str(abs(round(total,2)))
+        total = "$" + str(abs(round(total, 2)))
     else:
         prof_or_loss = "gained"
-        total = "$" + str(round(total,2))
-    
-    highest_earner_coin, highest_earner_amount = profitable_coins_ordered[0], "$" + str(profits_ordered[0])
-    biggest_burner_coin, biggest_burner_amount = loss_coins_ordered[-1], str(losses_ordered[-1]).replace("-","$")
-    
+        total = "$" + str(round(total, 2))
+
+    highest_earner_coin, highest_earner_amount = profitable_coins_ordered[0], "$" + str(
+        profits_ordered[0]
+    )
+    biggest_burner_coin, biggest_burner_amount = loss_coins_ordered[-1], str(
+        losses_ordered[-1]
+    ).replace("-", "$")
+
     with open("./resources/crypto-colours.json") as colours:
         colour_dict = json.load(colours)
 
-    profitable_colour_order = determine_colour(profitable_coins_ordered, colour_dict, alt_colours_for_graphs)
-    loss_colour_order = determine_colour(loss_coins_ordered, colour_dict, alt_colours_for_graphs)
+    profitable_colour_order = determine_colour(
+        profitable_coins_ordered, colour_dict, alt_colours_for_graphs
+    )
+    loss_colour_order = determine_colour(
+        loss_coins_ordered, colour_dict, alt_colours_for_graphs
+    )
 
     return templates.TemplateResponse(
         "analysis.html",
@@ -520,6 +556,5 @@ def analysis(request: Request, db: Session = Depends(get_db)):
             "highest_earner_amount": highest_earner_amount,
             "biggest_burner_coin": biggest_burner_coin,
             "biggest_burner_amount": biggest_burner_amount,
-
         },
     )

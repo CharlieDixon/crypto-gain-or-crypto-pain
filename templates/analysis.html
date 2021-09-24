@@ -8,7 +8,6 @@
     .left {
         padding-left: 10%
     }
-
     .right {
         padding-right: 10%
     }
@@ -17,7 +16,7 @@
 <body class="split">
     <div style="position: relative; left: 72%; margin-top: 2.5%">
         <span>
-        <h2>In total, you've {{prof_or_loss}} {{total}}</h2>
+            <h2>In total, you've {{prof_or_loss}} {{total}}</h2>
         </span>
     </div>
     <div class="split left" style="margin-top:4%;">
@@ -30,7 +29,7 @@
         <div>
             <h4 style="text-align:center; margin-top: 20px; line-height: 1.8em;">
                 Through savvy trades, you've gained {{total_gained}}, with your highest earner, {{highest_earner_coin}},
-                 adding {{highest_earner_amount}} to your balance.</h4>
+                adding {{highest_earner_amount}} to your balance.</h4>
         </div>
     </div>
     <div class="split right" style="margin-top:4%;">
@@ -47,45 +46,9 @@
     </div>
 </body>
 
-<script type="text/javascript">
-    const profitData = {
-        labels: {{ profitable_coins| safe }},
-    datasets: [{
-        label: 'Trade Summary',
-        data: {{ profits_ordered| safe }},
-        backgroundColor: {{ profitable_colour_order| safe }},
-        hoverOffset: 4
-        }]
-    };
-    const profitConfig = {
-        type: 'pie',
-        data: profitData,
-        options: { maintainAspectRatio: false }
-    };
-    var bestPie = new Chart(
-        document.getElementById('bestPie'),
-        profitConfig
-    );
-</script>
-<script type="text/javascript">
-
-    const lossData = {
-        labels: {{ loss_coins| safe }},
-    datasets: [{
-        label: 'Trade Summary',
-        data: {{ losses_ordered| safe }},
-        backgroundColor: {{ loss_colour_order| safe }},
-        hoverOffset: 4
-        }]
-    };
-    const lossConfig = {
-        type: 'pie',
-        data: lossData,
-        options: { maintainAspectRatio: false }
-    };
-    var worstPie = new Chart(
-        document.getElementById('worstPie'),
-        lossConfig
-    );
-</script>
+<script type="text/javascript" src="/static/analysis.js"></script>
+<script
+    type="text/javascript">createBestPie({{ profitable_coins| safe }}, {{ profits_ordered| safe }}, {{ profitable_colour_order| safe }})</script>
+<script
+    type="text/javascript">createWorstPie({{ loss_coins| safe }}, {{ losses_ordered| safe }}, {{ loss_colour_order| safe }})</script>
 {% endblock %}

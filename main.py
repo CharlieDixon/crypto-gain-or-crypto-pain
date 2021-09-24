@@ -14,6 +14,7 @@ from sql_database.models import Cryptocurrency, Trades
 import configparser
 from binance import Client
 import uuid
+import uvicorn
 import httpx
 from resources.currency_info import (
     currency_codes,
@@ -578,3 +579,6 @@ def analysis(request: Request, db: Session = Depends(get_db)):
             "biggest_burner_amount": biggest_burner_amount,
         },
     )
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, log_level="info")

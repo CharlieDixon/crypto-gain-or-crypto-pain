@@ -25,3 +25,17 @@ def determine_colour(coin_order, colour_dict, alt_colours_for_graphs):
             else:
                 colour_order.append(random.choice(alt_colours_for_graphs))
         return colour_order
+    
+def worst_trade(trades):
+        """Find lowest value trade and return it as a float, could use func.min() but column in string format so doesn't work."""
+        worst_loss = 0
+        worst_coin = None
+        worst_coin_quote = None
+        for trade in trades: 
+            if float(trade[2]) < worst_loss:
+                unformatted_worst_loss = trade[2]
+                worst_loss = float(trade[2])
+                worst_coin = trade[0]
+                worst_coin_quote = trade[1]
+        worst_loss = str(round(worst_loss, 2))
+        return worst_coin, worst_coin_quote, worst_loss, unformatted_worst_loss

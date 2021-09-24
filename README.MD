@@ -11,6 +11,10 @@ Provides an API with a frontend user interface for querying the past 24hrs of da
 Users can also submit their own trades and see how they would have fared.
 
 ![Demonstration](resources/demo.gif)
+## Identify worst trade 
+![Worst trade page](resources/worst-demo.png)
+## Analysis of trading history
+![Analytics page](resources/analysis-demo.png)
 
 ## Instructions
 > You will need a binance API token in order for interactions with their API to work. Instructions for how to create one can be found here: https://www.binance.com/en/support/faq/360002502072. 
@@ -37,6 +41,7 @@ Click url link displayed in terminal or open browser at http://127.0.0.1:8000 to
 - `JavaScript/jQuery`
 - `Jinja2 templating engine`
 - `HTML & CSS`
+- `Chart.js`
 ## Backend
 - `Python`
 - `SQLAlchemy with sqlite3`

@@ -5,12 +5,22 @@
 <link rel="stylesheet" href="static/overridestyle.css" />
 <link rel="stylesheet" href="static/split-screen.css" />
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+<style>
+    .left {
+        margin-top: 3%;
+    }
+    .right {
+        margin-right: 5%;
+    }
+    .split {
+        overflow: hidden;
+    }
+    .main-title {
+        margin-top: 30%;
+    }
+</style>
 <body class="split">
     <div class="split left">
-        <div class="main-title">
-            <h2>Crypto gain or crypto pain</h2>
-        </div>
         <div class="img-overlay-wrap">
             <img src="static/images/crash.svg" width=500px>
             <svg viewBox="0 0 200 200" id="base-svg">
@@ -25,15 +35,15 @@
     </div>
     <div class="split right">
         <div class="main-title">
-            <h2>Your worst trade</h2>
+            <h2 style="padding-right: 2%;">
+                <i class="arrow left icon" style="overflow: visible; padding-right: 4%;"></i>
+                Your worst trade
+            </h2>
         </div>
-        <div style="text-align: center;">
+        <div style="text-align: center; font-size: 1.2em">
             Unfortunately you lost {{worst_loss}} by trading {{before_trade_dollars}} of {{svg_quote}} for {{svg_base}}.
             <br>
             Click <a href="/analysis">here</a> for a more detailed breakdown of your trade history.
-        </div>
-        <div>
-            <canvas id="myChart" width="400" height="400"></canvas>
         </div>
     </div>
 </body>

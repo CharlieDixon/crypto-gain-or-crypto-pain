@@ -28,9 +28,9 @@
             <h2>Your worst trade</h2>
         </div>
         <div style="text-align: center;">
-            Unfortunately you lost X amount by trading Y amount of ETH for BTC.
+            Unfortunately you lost {{worst_loss}} by trading {{before_trade_dollars}} of {{svg_quote}} for {{svg_base}}.
             <br>
-            Click here for a more detailed breakdown of your trade history.
+            Click <a href="/analysis">here</a> for a more detailed breakdown of your trade history.
         </div>
         <div>
             <canvas id="myChart" width="400" height="400"></canvas>

@@ -29,7 +29,6 @@ import sys
 import json
 import backoff
 import difflib
-import random
 from utils.data_cleaning import (
     remove_html_tags,
     create_description_for_search_results,
@@ -92,6 +91,7 @@ def get_base_and_quote_assets():
         if pair["status"] == "TRADING":
             assets[pair["symbol"]] = pair["baseAsset"], pair["quoteAsset"]
             set_of_base_coins.add(pair["baseAsset"])
+    return assets, set_of_base_coins
 
 
 @app.on_event("startup")
@@ -579,6 +579,7 @@ def analysis(request: Request, db: Session = Depends(get_db)):
             "biggest_burner_amount": biggest_burner_amount,
         },
     )
+
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=8000, log_level="info")

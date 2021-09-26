@@ -8,3 +8,5 @@ forex-python
 aiofiles
 respx
 Unidecode
+loguru
+asynctest

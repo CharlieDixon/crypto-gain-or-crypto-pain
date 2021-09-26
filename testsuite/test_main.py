@@ -1,8 +1,9 @@
 import unittest
-from unittest.mock import patch
-from main import get_base_and_quote_assets, convert_to_dollars
+from unittest.mock import patch, AsyncMock
+from main import get_base_and_quote_assets, convert_to_dollars, get_all_coins
 import respx
 from httpx import Response
+import asynctest
 
 
 class TestMain(unittest.TestCase):
@@ -52,6 +53,46 @@ class TestMain(unittest.TestCase):
         assert respx.calls.call_count == 1
         self.assertEqual(actual, expected)
 
+    # @patch("main.client.get_ticker")
+    # @patch("main.SessionLocal", return_value="Here")
+    # def test_def_get_all_coins(self, mock_db, get_ticker):
+    #     get_ticker.return_value = [
+    #         {
+    #             "symbol": "ETHBTC",
+    #             "priceChange": "0.00010800",
+    #             "priceChangePercent": "0.157",
+    #             "weightedAvgPrice": "0.06800151",
+    #         },
+    #         {
+    #             "symbol": "BNBETH",
+    #             "priceChange": "-0.00480000",
+    #             "priceChangePercent": "-3.983",
+    #             "weightedAvgPrice": "0.11887713",
+    #         },
+    #     ]
+    #     get_all_coins()
+    #     print(mock_db.return_value)
 
+class TestAsyncFunctions(asynctest.TestCase):
+    @patch("main.client.get_ticker")
+    @patch("main.SessionLocal", return_value="PLACEHOLDER")
+    async def test_def_get_all_coins(self, mock_db, get_ticker):
+        get_ticker.return_value = [
+            {
+                "symbol": "ETHBTC",
+                "priceChange": "0.00010800",
+                "priceChangePercent": "0.157",
+                "weightedAvgPrice": "0.06800151",
+            },
+            {
+                "symbol": "BNBETH",
+                "priceChange": "-0.00480000",
+                "priceChangePercent": "-3.983",
+                "weightedAvgPrice": "0.11887713",
+            },
+        ]
+        await get_all_coins()
+    
+    
 if __name__ == "__main__":
     unittest.main()

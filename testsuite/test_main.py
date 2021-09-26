@@ -1,9 +1,11 @@
 import unittest
-from unittest.mock import patch, AsyncMock
+from unittest.mock import patch, AsyncMock, Mock
 from main import get_base_and_quote_assets, convert_to_dollars, get_all_coins
+from sql_database.models import Cryptocurrency
 import respx
 from httpx import Response
 import asynctest
+import asyncio
 
 
 class TestMain(unittest.TestCase):
@@ -53,31 +55,16 @@ class TestMain(unittest.TestCase):
         assert respx.calls.call_count == 1
         self.assertEqual(actual, expected)
 
-    # @patch("main.client.get_ticker")
-    # @patch("main.SessionLocal", return_value="Here")
-    # def test_def_get_all_coins(self, mock_db, get_ticker):
-    #     get_ticker.return_value = [
-    #         {
-    #             "symbol": "ETHBTC",
-    #             "priceChange": "0.00010800",
-    #             "priceChangePercent": "0.157",
-    #             "weightedAvgPrice": "0.06800151",
-    #         },
-    #         {
-    #             "symbol": "BNBETH",
-    #             "priceChange": "-0.00480000",
-    #             "priceChangePercent": "-3.983",
-    #             "weightedAvgPrice": "0.11887713",
-    #         },
-    #     ]
-    #     get_all_coins()
-    #     print(mock_db.return_value)
-
-class TestAsyncFunctions(asynctest.TestCase):
+    @patch("main.Cryptocurrency")
+    @patch("main.get_assets", new_callable=AsyncMock)
     @patch("main.client.get_ticker")
-    @patch("main.SessionLocal", return_value="PLACEHOLDER")
-    async def test_def_get_all_coins(self, mock_db, get_ticker):
-        get_ticker.return_value = [
+    @patch("main.SessionLocal")
+    def test_def_get_all_coins(self, mock_db, mock_get_ticker, mock_get_assets, mock_crypto):
+        # ensure 'exists' condition in for loop is always False
+        mock_db.return_value.query.return_value.filter.return_value.first.return_value = (
+            False
+        )
+        mock_get_ticker.return_value = [
             {
                 "symbol": "ETHBTC",
                 "priceChange": "0.00010800",
@@ -91,8 +78,39 @@ class TestAsyncFunctions(asynctest.TestCase):
                 "weightedAvgPrice": "0.11887713",
             },
         ]
-        await get_all_coins()
-    
-    
+        mock_get_assets.return_value = {
+            "ETHBC": ("ETH", "BTC"),
+            "BNBETH": ("BNB", "ETH"),
+        }, None
+        mock_crypto = Mock()
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(get_all_coins())
+        loop.close()
+        
+
+
+# class TestAsyncFunctions(asynctest.TestCase):
+#     @asynctest.patch("main.get_assets", scope="limited")
+#     @patch("main.client.get_ticker")
+#     @patch("main.SessionLocal", return_value="PLACEHOLDER")
+#     async def test_def_get_all_coins(self, mock_db, get_ticker, get_assets):
+#         get_ticker.return_value = [
+#             {
+#                 "symbol": "ETHBTC",
+#                 "priceChange": "0.00010800",
+#                 "priceChangePercent": "0.157",
+#                 "weightedAvgPrice": "0.06800151",
+#             },
+#             {
+#                 "symbol": "BNBETH",
+#                 "priceChange": "-0.00480000",
+#                 "priceChangePercent": "-3.983",
+#                 "weightedAvgPrice": "0.11887713",
+#             },
+#         ]
+#         get_assets.return_value = {"ETHBC": ("ETH", "BTC"), "BNBETH": ("BNB", "ETH")}
+#         await get_all_coins()
+
+
 if __name__ == "__main__":
     unittest.main()

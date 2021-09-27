@@ -10,3 +10,5 @@ respx
 Unidecode
 loguru
 asynctest
+pytest
+pytest-asyncio

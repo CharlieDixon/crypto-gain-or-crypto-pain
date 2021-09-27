@@ -123,11 +123,8 @@ async def get_all_coins():
     db.commit()
 
 
-@app.on_event("startup")
 @backoff.on_predicate(backoff.constant, interval=5, max_tries=8)
-def get_gecko_coin_list() -> list:
-    """Retrieves and returns list of coins from gecko api, retries if unsuccessful."""
-    global gecko_coin_list
+def gecko_coin_api_get_coins():
     try:
         res = httpx.get("https://api.coingecko.com/api/v3/coins/list", timeout=10)
     except httpx.RequestError as exc:
@@ -136,6 +133,15 @@ def get_gecko_coin_list() -> list:
         print(
             f"Error response {exc.response.status_code} while requesting {exc.request.url!r}."
         )
+    return res
+
+
+@app.on_event("startup")
+@backoff.on_predicate(backoff.constant, interval=5, max_tries=8)
+def get_gecko_coin_list() -> list:
+    """Retrieves and returns list of coins from gecko api, retries if unsuccessful."""
+    global gecko_coin_list
+    res = gecko_coin_api_get_coins()
     try:
         gecko_coin_list = res.json()
         logger.info(gecko_coin_list[0])

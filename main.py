@@ -127,13 +127,13 @@ async def get_all_coins():
 def gecko_coin_api_get_coins():
     try:
         res = httpx.get("https://api.coingecko.com/api/v3/coins/list", timeout=10)
+        res.raise_for_status()
     except httpx.RequestError as exc:
-        print(f"An error occurred while requesting {exc.request.url!r}.")
+        logger.error(f"An error occurred while requesting {exc.request.url!r}.")
     except httpx.HTTPStatusError as exc:
-        print(
-            f"Error response {exc.response.status_code} while requesting {exc.request.url!r}."
-        )
-    return res
+        logger.error(f"Error response {exc.response.status_code} while requesting {exc.request.url!r}.")
+    else:
+        return res
 
 
 @app.on_event("startup")

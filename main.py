@@ -29,7 +29,6 @@ import sys
 import json
 import backoff
 import difflib
-import random
 from utils.data_cleaning import (
     remove_html_tags,
     create_description_for_search_results,
@@ -92,6 +91,7 @@ def get_base_and_quote_assets():
         if pair["status"] == "TRADING":
             assets[pair["symbol"]] = pair["baseAsset"], pair["quoteAsset"]
             set_of_base_coins.add(pair["baseAsset"])
+    return assets, set_of_base_coins
 
 
 @app.on_event("startup")
@@ -123,26 +123,30 @@ async def get_all_coins():
     db.commit()
 
 
+@backoff.on_predicate(backoff.constant, interval=5, max_tries=8)
+def gecko_coin_api_get_coins():
+    """Retrieves and returns list of coins from gecko api, retries if unsuccessful."""
+    try:
+        return httpx.get("https://api.coingecko.com/api/v3/coins/list", timeout=10)
+    except httpx.RequestError as exc:
+        logger.error(f"An error occurred while requesting {exc.request.url!r}.")
+    except httpx.HTTPStatusError as exc:
+        logger.error(f"Error response {exc.response.status_code} while requesting {exc.request.url!r}.")
+
+
 @app.on_event("startup")
 @backoff.on_predicate(backoff.constant, interval=5, max_tries=8)
 def get_gecko_coin_list() -> list:
-    """Retrieves and returns list of coins from gecko api, retries if unsuccessful."""
+    """Takes result from gecko_coin_api_get_coins func and assigns it to gecko_coin_list global variable."""
     global gecko_coin_list
-    try:
-        res = httpx.get("https://api.coingecko.com/api/v3/coins/list", timeout=10)
-    except httpx.RequestError as exc:
-        print(f"An error occurred while requesting {exc.request.url!r}.")
-    except httpx.HTTPStatusError as exc:
-        print(
-            f"Error response {exc.response.status_code} while requesting {exc.request.url!r}."
-        )
+    res = gecko_coin_api_get_coins()
     try:
         gecko_coin_list = res.json()
         logger.info(gecko_coin_list[0])
+        return gecko_coin_list
     except JSONDecodeError:
         logger.opt(exception=True).error("Exception logged with error level:")
         logger.info("Couldn't get gecko coin list")
-    return gecko_coin_list
 
 
 def get_first_sentence_from_string(sentence) -> str:
@@ -579,6 +583,7 @@ def analysis(request: Request, db: Session = Depends(get_db)):
             "biggest_burner_amount": biggest_burner_amount,
         },
     )
+
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=8000, log_level="info")

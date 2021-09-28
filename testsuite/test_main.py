@@ -1,11 +1,14 @@
+import json
 import unittest
 from unittest.mock import patch, AsyncMock, Mock
-from main import get_base_and_quote_assets, convert_to_dollars, get_gecko_coin_list
+from main import get_base_and_quote_assets, convert_to_dollars, get_gecko_coin_list, gecko_coin_api_get_coins
 from sql_database.models import Cryptocurrency
 import respx
-from httpx import Response
+import httpx
+from httpx import Response, HTTPError, HTTPStatusError, RequestError
 import asynctest
 import asyncio
+import pytest
 
 
 class TestMain(unittest.TestCase):
@@ -55,6 +58,36 @@ class TestMain(unittest.TestCase):
         assert respx.calls.call_count == 1
         self.assertEqual(actual, expected)
 
+    # @respx.mock
+    # def test_gecko_coin_api_get_coins(self):
+    #     json_response = [
+    #         {"id": "aave", "symbol": "aave", "name": "Aave"},
+    #         {"id": "solana", "symbol": "sol", "name": "Solana"},
+    #     ]
+    #     route = respx.get("https://api.coingecko.com/api/v3/coins/list").mock(return_value=Response(200, json=json_response))
+    #     actual = gecko_coin_api_get_coins()
+    #     actual_json = actual.json()
+    #     expected = json_response
+    #     assert route.called
+    #     assert respx.calls.call_count == 1
+    #     assert actual.status_code == 200
+    #     self.assertEqual(actual_json, expected)
+        
+    @respx.mock
+    def test_gecko_coin_api_get_coins_bad_response(self):
+        mock_response = Mock()
+        mock_response.status_code = 404
+        mock_response.url = "https://api.coingecko.com/api/v3/coins/list"
+        respx.get("https://api.coingecko.com/api/v3/coins/list").mock(side_effect=HTTPStatusError(message="test run", request=mock_response, response=mock_response))        
+        with self.assertRaises(HTTPStatusError):
+            actual = gecko_coin_api_get_coins()
+            # httpx.get("https://api.coingecko.com/api/v3/coins/list")
+        # with self.assertRaises(httpx.HTTPStatusError):
+        #     gecko_coin_api_get_coins()
+        # assert route.called
+        assert respx.calls.call_count == 1
+        # assert actual.status_code == 400
 
+        
 if __name__ == "__main__":
     unittest.main()

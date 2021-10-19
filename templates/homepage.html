@@ -218,17 +218,17 @@
 </div>
 <div style="display: flex; justify-content: space-between; align-items:center; flex-direction:row; flex-wrap: nowrap;">
     <form>
-        <div class="menubar" style="display:inline-block;; margin-right:5px">
+        <div class="menubar" style="display: flex; margin-right: 5px">
             <div class="ui left icon input" style="box-sizing: border-box;">
                 <input name="search" type="text" class="ui search icon input" id="userInput" required="required"
                     placeholder="Search..." onkeyup="filterTable()" value={{ search or '' }}>
                 <i class="search icon"></i>
             </div>
-            <div class="ui checkbox" style="margin-left: 10px">
+            <div class="ui checkbox" style="margin-left: 10px; margin-top: 10px">
                 <input name="gain" type="checkbox" name="gain" {% if gain %}checked="checked" {% endif %}>
                 <label>Gain</label>
             </div>
-            <div class="ui checkbox" style="margin-left: 5px">
+            <div class="ui checkbox" style="margin-left: 5px; margin-top: 10px">
                 <input name="pain" type="checkbox" name="pain" {% if pain %}checked="checked" {% endif %}>
                 <label>Pain</label>
             </div>
@@ -237,20 +237,32 @@
             </button>
         </div>
     </form>
-            <button class="ui button" onclick=homepage() style="margin-left: 5px; margin-right:15px">
-                Reset
-            </button>
+    <button class="ui button" style="margin-left: 5px; margin-right:15px" onclick="redirect('/')">
+        Reset
+    </button>
 
-    <div class="menubar" style="flex-grow:1; margin-right: 30px">
+    <div class="menubar" style="flex-grow:1;">
         <div class="ui search category">
-            <div class="ui left icon input" style="width:80%">
+            <div class="ui left icon input" style="width:95%">
                 <input class="prompt" type="text" placeholder="Get info on coins" tabindex="0">
                 <i class="bitcoin icon" style="color:orange"></i>
             </div>
         </div>
     </div>
 
-    <div class="menubar">
+    <div class="menubar" style="display: flex">
+        <button class="ui vertical animated button" style="background-color: indianred; color:whitesmoke" onclick="redirect('/worst')">
+            <div class="visible content">Worst trade</div>
+            <div class="hidden content">
+                <i class="thumbs down icon"></i>
+            </div>
+        </button>
+        <button class="ui animated fade button" style="background-color: darkorange; color: whitesmoke" onclick="redirect('/analysis')">
+            <div class="visible content">Analysis</div>
+            <div class="hidden content">
+                <i class="chart pie icon"></i>
+            </div>
+        </button>
         <button id="try_your_luck" class="ui animated button green" tabindex="0">
             <div class="visible content">Try your luck!</div>
             <div class="hidden content">
@@ -365,7 +377,8 @@
                     <a href="close-modal" rel="modal:close" onclick="makeDefaultText()">
                         <input type="submit" value="Nope" class="ui black deny button" style="margin-right:20px">
                     </a>
-                    <input type="submit" value="Submit trade" class="ui positive right labeled icon button" onclick="makeDefaultText()">
+                    <input type="submit" value="Submit trade" class="ui positive right labeled icon button"
+                        onclick="makeDefaultText()">
                 </p>
                 <div class="ui error message"></div>
     </form>

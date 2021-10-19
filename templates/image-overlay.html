@@ -4,21 +4,26 @@
 <link rel="stylesheet" href="static/image-overlay.css" />
 <link rel="stylesheet" href="static/overridestyle.css" />
 <link rel="stylesheet" href="static/split-screen.css" />
+<script src="static/user-interface.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
     .left {
         margin-top: 3%;
     }
+
     .right {
         margin-right: 5%;
     }
+
     .split {
         overflow: hidden;
     }
+
     .main-title {
         margin-top: 30%;
     }
 </style>
+
 <body class="split">
     <div class="split left">
         <div class="img-overlay-wrap">
@@ -42,8 +47,22 @@
         </div>
         <div style="text-align: center; font-size: 1.2em">
             Unfortunately you lost {{worst_loss}} by trading {{before_trade_dollars}} of {{svg_quote}} for {{svg_base}}.
-            <br>
-            Click <a href="/analysis">here</a> for a more detailed breakdown of your trade history.
+        </div>
+        <div>
+            <button class="ui vertical animated button" tabindex="0" style="background-color: lightseagreen; display:inline-block; position: relative; top: 1.5em; left: 16em; width: 140px"
+            onclick="redirect('/')">
+                <div class="visible content">Back to home</div>
+                <div class="hidden content">
+                    <i class="home icon"></i>
+                </div>
+            </button>
+            <button class="ui animated fade button" style="background-color: darkorange; display:inline-block; position: relative; top: 1.5em; left: 18em; width: 140px"
+                onclick="redirect('/analysis')">
+                <div class="visible content">Analysis</div>
+                <div class="hidden content">
+                    <i class="chart pie icon"></i>
+                </div>
+            </button>
         </div>
     </div>
 </body>
